@@ -22,9 +22,7 @@ class RatesApplication : Application(), HasAndroidInjector {
         super.onCreate()
 
         DaggerApplicationComponent
-            .builder()
-            .appContext(this)
-            .create(this)
-            .inject(this)
+            .factory()
+            .create(applicationContext)
     }
 }

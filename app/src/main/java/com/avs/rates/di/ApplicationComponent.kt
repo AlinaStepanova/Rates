@@ -21,9 +21,8 @@ import javax.inject.Singleton
 )
 interface ApplicationComponent : AndroidInjector<RatesApplication> {
 
-    @Component.Builder
-    abstract class Builder : AndroidInjector.Builder<RatesApplication>() {
-        @BindsInstance
-        abstract fun appContext(appContext: Context): Builder
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance applicationContext: Context): ApplicationComponent
     }
 }
