@@ -4,12 +4,12 @@ import android.content.Context
 import com.avs.rates.RatesApplication
 import com.avs.rates.di.modules.ActivityBuilderModule
 import com.avs.rates.di.modules.ApplicationModule
+import com.avs.rates.ui.main.MainActivity
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import javax.inject.Singleton
-
 
 @Singleton
 @Component(
@@ -23,6 +23,8 @@ interface ApplicationComponent : AndroidInjector<RatesApplication> {
 
     @Component.Factory
     interface Factory {
-        fun create(@BindsInstance applicationContext: Context): ApplicationComponent
+        fun create(@BindsInstance context: Context): ApplicationComponent
     }
+
+    fun inject(activity: MainActivity)
 }

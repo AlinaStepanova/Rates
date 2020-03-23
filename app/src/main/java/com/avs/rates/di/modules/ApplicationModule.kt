@@ -8,7 +8,9 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [
+    NetworkModule::class
+])
 class ApplicationModule {
 
     @Singleton
