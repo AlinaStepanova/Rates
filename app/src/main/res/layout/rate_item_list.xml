@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/imagePerson"
+        android:id="@+id/ivFlagImage"
         android:layout_width="@dimen/dimen_42dp"
         android:layout_height="@dimen/dimen_42dp"
         android:layout_marginStart="@dimen/dimen_16dp"
@@ -31,7 +30,7 @@
         android:textColor="@color/colorAccent"
         android:textSize="@dimen/dimen_16sp"
         app:layout_constraintBottom_toTopOf="@+id/tvCurrencyFullName"
-        app:layout_constraintStart_toEndOf="@+id/imagePerson"
+        app:layout_constraintStart_toEndOf="@+id/ivFlagImage"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -45,7 +44,7 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/dimen_14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imagePerson"
+        app:layout_constraintStart_toEndOf="@+id/ivFlagImage"
         app:layout_constraintTop_toBottomOf="@+id/tvCurrencyShortName" />
 
     <EditText

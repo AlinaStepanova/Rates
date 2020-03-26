@@ -2,6 +2,7 @@ package com.avs.rates.ui.main
 
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.avs.rates.R
 import com.avs.rates.RatesApplication
 import com.avs.rates.databinding.ActivityMainBinding
@@ -22,5 +23,14 @@ class MainActivity : BaseActivity() {
         viewModel = viewModelFactory.get()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.mainViewModel = viewModel
+        binding.lifecycleOwner = this
+        val adapter = RatesAdapter(null)
+        binding.recyclerView.adapter = adapter
+
+        viewModel.conversion.observe(this, Observer {
+            it?.let {
+                adapter.rates = it
+            }
+        })
     }
 }
