@@ -1,16 +1,13 @@
 package com.avs.rates.currency
 
-abstract class BaseCurrency() {
+abstract class BaseCurrency {
 
-    var rate: Double = 0.0
-
-    fun setValue(newValue : Double) {
-        this.rate = newValue
-    }
+    var rate: Double = 1.0
 
     abstract fun getShortName(): String
 
     abstract fun getFullName(): String
+
     fun getImagePath() = "https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
 }
 

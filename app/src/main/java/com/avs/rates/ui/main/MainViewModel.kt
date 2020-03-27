@@ -3,6 +3,7 @@ package com.avs.rates.ui.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.avs.rates.DEFAULT_CURRENCY
 import com.avs.rates.currency.*
 import com.avs.rates.network.RatesServerApi
 import com.avs.rates.network.dto.Conversion
@@ -18,7 +19,7 @@ class MainViewModel @Inject constructor(
 
     private var apiDisposable: Disposable? = null
     private var rxBusDisposable: Disposable? = null
-    private var baseCurrency = EUR()
+    private var baseCurrency : BaseCurrency? = null
     private var currenciesList = LinkedList<BaseCurrency>()
     private var _conversion = MutableLiveData<List<BaseCurrency>>()
     val conversion: LiveData<List<BaseCurrency>>
@@ -26,10 +27,16 @@ class MainViewModel @Inject constructor(
 
     init {
         addCurrenciesToList()
-        apiDisposable = ratesServerApi.getRatesPeriodically(baseCurrency.getShortName())
+        apiDisposable = ratesServerApi.getRatesPeriodically(baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
         rxBusDisposable = rxBus.events.subscribe { event ->
             if (event is Conversion) {
-                updateList(event)
+                baseCurrency = getBaseCurrency(event.baseCurrency)
+                if (event.baseCurrency != currenciesList[0].getShortName()) {
+                    val currency = baseCurrency
+                    currenciesList.remove(currency)
+                    currenciesList.addFirst(currency)
+                }
+                updateRateValues(event)
                 _conversion.value = currenciesList
             }
         }
@@ -50,6 +57,7 @@ class MainViewModel @Inject constructor(
         currenciesList.add(CNY())
         currenciesList.add(CZK())
         currenciesList.add(DKK())
+        currenciesList.add(EUR())
         currenciesList.add(GBP())
         currenciesList.add(HKD())
         currenciesList.add(HRK())
@@ -74,98 +82,98 @@ class MainViewModel @Inject constructor(
         currenciesList.add(ZAR())
     }
 
-    private fun updateList(conversion: Conversion) {
+    private fun updateRateValues(conversion: Conversion) {
         for (currency in currenciesList) {
             when (currency) {
                 is AUD -> {
-                    currency.setValue(conversion.rates.AUD)
+                    currency.rate = conversion.rates.AUD
                 }
                 is BGN -> {
-                    currency.setValue(conversion.rates.BGN)
+                    currency.rate = conversion.rates.BGN
                 }
                 is BRL -> {
-                    currency.setValue(conversion.rates.BRL)
+                    currency.rate = conversion.rates.BRL
                 }
                 is CAD -> {
-                    currency.setValue(conversion.rates.CAD)
+                    currency.rate = conversion.rates.CAD
                 }
                 is CHF -> {
-                    currency.setValue(conversion.rates.CHF)
+                    currency.rate = conversion.rates.CHF
                 }
                 is CNY -> {
-                    currency.setValue(conversion.rates.CNY)
+                    currency.rate = conversion.rates.CNY
                 }
                 is CZK -> {
-                    currency.setValue(conversion.rates.CZK)
+                    currency.rate = conversion.rates.CZK
                 }
                 is DKK -> {
-                    currency.setValue(conversion.rates.DKK)
+                    currency.rate = conversion.rates.DKK
                 }
                 is GBP -> {
-                    currency.setValue(conversion.rates.GBP)
+                    currency.rate = conversion.rates.GBP
                 }
                 is HKD -> {
-                    currency.setValue(conversion.rates.HKD)
+                    currency.rate = conversion.rates.HKD
                 }
                 is HRK -> {
-                    currency.setValue(conversion.rates.HRK)
+                    currency.rate = conversion.rates.HRK
                 }
                 is HUF -> {
-                    currency.setValue(conversion.rates.HUF)
+                    currency.rate = conversion.rates.HUF
                 }
                 is IDR -> {
-                    currency.setValue(conversion.rates.IDR)
+                    currency.rate = conversion.rates.IDR
                 }
                 is ILS -> {
-                    currency.setValue(conversion.rates.ILS)
+                    currency.rate = conversion.rates.ILS
                 }
                 is INR -> {
-                    currency.setValue(conversion.rates.INR)
+                    currency.rate = conversion.rates.INR
                 }
                 is ISK -> {
-                    currency.setValue(conversion.rates.ISK)
+                    currency.rate = conversion.rates.ISK
                 }
                 is JPY -> {
-                    currency.setValue(conversion.rates.JPY)
+                    currency.rate = conversion.rates.JPY
                 }
                 is KRW -> {
-                    currency.setValue(conversion.rates.KRW)
+                    currency.rate = conversion.rates.KRW
                 }
                 is MXN -> {
-                    currency.setValue(conversion.rates.MXN)
+                    currency.rate = conversion.rates.MXN
                 }
                 is MYR -> {
-                    currency.setValue(conversion.rates.MYR)
+                    currency.rate = conversion.rates.MYR
                 }
                 is NZD -> {
-                    currency.setValue(conversion.rates.NZD)
+                    currency.rate = conversion.rates.NZD
                 }
                 is PHP -> {
-                    currency.setValue(conversion.rates.PHP)
+                    currency.rate = conversion.rates.PHP
                 }
                 is PLN -> {
-                    currency.setValue(conversion.rates.PLN)
+                    currency.rate = conversion.rates.PLN
                 }
                 is RON -> {
-                    currency.setValue(conversion.rates.RON)
+                    currency.rate = conversion.rates.RON
                 }
                 is RUB -> {
-                    currency.setValue(conversion.rates.RUB)
+                    currency.rate = conversion.rates.RUB
                 }
                 is SEK -> {
-                    currency.setValue(conversion.rates.SEK)
+                    currency.rate = conversion.rates.SEK
                 }
                 is SGD -> {
-                    currency.setValue(conversion.rates.SGD)
+                    currency.rate = conversion.rates.SGD
                 }
                 is THB -> {
-                    currency.setValue(conversion.rates.THB)
+                    currency.rate = conversion.rates.THB
                 }
                 is USD -> {
-                    currency.setValue(conversion.rates.USD)
+                    currency.rate = conversion.rates.USD
                 }
                 is ZAR -> {
-                    currency.setValue(conversion.rates.ZAR)
+                    currency.rate = conversion.rates.ZAR
                 }
             }
         }

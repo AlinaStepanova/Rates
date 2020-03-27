@@ -19,7 +19,7 @@ interface ListItemClickListener {
 
 class RatesAdapter(rates: ArrayList<BaseCurrency>?) : RecyclerView.Adapter<RatesAdapter.RatesViewHolder>() {
 
-    var rates: ArrayList<BaseCurrency>? = rates
+    var currencies: ArrayList<BaseCurrency>? = rates
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -34,13 +34,13 @@ class RatesAdapter(rates: ArrayList<BaseCurrency>?) : RecyclerView.Adapter<Rates
         return RatesViewHolder(view)
     }
 
-    override fun getItemCount() = rates?.size ?: 0
+    override fun getItemCount() = currencies?.size ?: 0
 
     override fun onBindViewHolder(holder: RatesViewHolder, position: Int) {
-        holder.bindRate(rates?.get(position)?.rate.toString())
-        holder.bindCurrencyFullName(rates?.get(position)?.getFullName())
-        holder.bindCurrencyShortName(rates?.get(position)?.getShortName())
-        holder.bindFlagImage(rates?.get(position)?.getImagePath())
+        holder.bindRate(currencies?.get(position)?.rate.toString())
+        holder.bindCurrencyFullName(currencies?.get(position)?.getFullName())
+        holder.bindCurrencyShortName(currencies?.get(position)?.getShortName())
+        holder.bindFlagImage(currencies?.get(position)?.getImagePath())
     }
 
     inner class RatesViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
