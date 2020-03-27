@@ -29,7 +29,7 @@ class MainActivity : BaseActivity() {
 
         viewModel.conversion.observe(this, Observer {
             it?.let {
-                adapter.rates = it
+                adapter.rates = ArrayList(it)
             }
         })
     }

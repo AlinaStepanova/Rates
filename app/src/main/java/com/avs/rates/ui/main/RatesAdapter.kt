@@ -9,16 +9,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.avs.rates.utils.CircleTransform
 import com.avs.rates.R
-import com.avs.rates.network.dto.Conversion
+import com.avs.rates.currency.BaseCurrency
 import com.squareup.picasso.Picasso
+import kotlin.collections.ArrayList
 
 interface ListItemClickListener {
     fun onListItemClick(clickedItemIndex: Int)
 }
 
-class RatesAdapter(rates: Conversion?) : RecyclerView.Adapter<RatesAdapter.RatesViewHolder>() {
+class RatesAdapter(rates: ArrayList<BaseCurrency>?) : RecyclerView.Adapter<RatesAdapter.RatesViewHolder>() {
 
-    var rates: Conversion? = rates
+    var rates: ArrayList<BaseCurrency>? = rates
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -33,10 +34,13 @@ class RatesAdapter(rates: Conversion?) : RecyclerView.Adapter<RatesAdapter.Rates
         return RatesViewHolder(view)
     }
 
-    override fun getItemCount() = 1
+    override fun getItemCount() = rates?.size ?: 0
 
     override fun onBindViewHolder(holder: RatesViewHolder, position: Int) {
-        holder. bindRate(rates?.rates?.AUD.toString())
+        holder.bindRate(rates?.get(position)?.rate.toString())
+        holder.bindCurrencyFullName(rates?.get(position)?.getFullName())
+        holder.bindCurrencyShortName(rates?.get(position)?.getShortName())
+        holder.bindFlagImage(rates?.get(position)?.getImagePath())
     }
 
     inner class RatesViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
@@ -50,19 +54,19 @@ class RatesAdapter(rates: Conversion?) : RecyclerView.Adapter<RatesAdapter.Rates
             view.setOnClickListener(this)
         }
 
-        fun bindCurrencyShortName(name: String) {
-            currencyShortName.text = name
+        fun bindCurrencyShortName(name: String?) {
+            if (name != null) currencyShortName.text = name
         }
 
-        fun bindCurrencyFullName(name: String) {
-            currencyFullName.text = name
+        fun bindCurrencyFullName(name: String?) {
+            if (name != null) currencyFullName.text = name
         }
 
         fun bindRate(value: String) {
             rate.setText(value)
         }
 
-        fun bindFlagImage(imageUrl: String) {
+        fun bindFlagImage(imageUrl: String?) {
             Picasso.get()
                 .load(imageUrl)
                 .fit()

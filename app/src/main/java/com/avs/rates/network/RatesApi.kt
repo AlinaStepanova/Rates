@@ -8,6 +8,6 @@ import retrofit2.http.Query
 
 interface RatesApi {
 
-    @GET("latest")
+    @GET("api/android/latest")
     fun getLatestRatesByBase(@Query("base") baseCurrency: String): Single<Response<Conversion>>
 }
