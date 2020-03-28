@@ -19,7 +19,8 @@ class MainViewModel @Inject constructor(
 
     private var apiDisposable: Disposable? = null
     private var rxBusDisposable: Disposable? = null
-    private var baseCurrency : BaseCurrency? = null
+    private var baseCurrency: BaseCurrency? = null
+    private var baseCurrencyValue = 1.0
     private var currenciesList = LinkedList<BaseCurrency>()
     private var _conversion = MutableLiveData<List<BaseCurrency>>()
     val conversion: LiveData<List<BaseCurrency>>
@@ -27,16 +28,18 @@ class MainViewModel @Inject constructor(
 
     init {
         addCurrenciesToList()
-        apiDisposable = ratesServerApi.getRatesPeriodically(baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
+        apiDisposable =
+            ratesServerApi.getRatesPeriodically(baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
         rxBusDisposable = rxBus.events.subscribe { event ->
             if (event is Conversion) {
                 val currency = getBaseCurrency(event.baseCurrency)
                 if (event.baseCurrency != currenciesList[0].getShortName()) {
                     baseCurrency = currency
-                    currenciesList.removeLastOccurrence(currency)
+                    currenciesList.remove(currency)
+                    currency.rate = baseCurrencyValue
                     currenciesList.addFirst(currency)
                 }
-                updateRateValues(event)
+                updateRateValues(event, currency)
                 _conversion.value = currenciesList
             }
         }
@@ -83,104 +86,139 @@ class MainViewModel @Inject constructor(
         currenciesList.add(ZAR())
     }
 
-    private fun updateRateValues(conversion: Conversion) {
+    private fun updateRateValues(
+        conversion: Conversion,
+        baseCurrency: BaseCurrency
+    ) {
         for (currency in currenciesList) {
             when (currency) {
                 is EUR -> {
-                    currency.rate = conversion.rates.EUR
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.EUR * baseCurrencyValue
                 }
                 is AUD -> {
-                    currency.rate = conversion.rates.AUD
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.AUD * baseCurrencyValue
                 }
                 is BGN -> {
-                    currency.rate = conversion.rates.BGN
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.BGN * baseCurrencyValue
                 }
                 is BRL -> {
-                    currency.rate = conversion.rates.BRL
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.BRL * baseCurrencyValue
                 }
                 is CAD -> {
-                    currency.rate = conversion.rates.CAD
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.CAD * baseCurrencyValue
                 }
                 is CHF -> {
-                    currency.rate = conversion.rates.CHF
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.CHF * baseCurrencyValue
                 }
                 is CNY -> {
-                    currency.rate = conversion.rates.CNY
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.CNY * baseCurrencyValue
                 }
                 is CZK -> {
-                    currency.rate = conversion.rates.CZK
+                    if (currency != baseCurrency) currency.rate =
+                        conversion.rates.CZK * baseCurrencyValue
                 }
                 is DKK -> {
-                    currency.rate = conversion.rates.DKK
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.DKK * baseCurrencyValue
                 }
                 is GBP -> {
-                    currency.rate = conversion.rates.GBP
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.GBP * baseCurrencyValue
                 }
                 is HKD -> {
-                    currency.rate = conversion.rates.HKD
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.HKD * baseCurrencyValue
                 }
                 is HRK -> {
-                    currency.rate = conversion.rates.HRK
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.HRK * baseCurrencyValue
                 }
                 is HUF -> {
-                    currency.rate = conversion.rates.HUF
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.HUF * baseCurrencyValue
                 }
                 is IDR -> {
-                    currency.rate = conversion.rates.IDR
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.IDR * baseCurrencyValue
                 }
                 is ILS -> {
-                    currency.rate = conversion.rates.ILS
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.ILS * baseCurrencyValue
                 }
                 is INR -> {
-                    currency.rate = conversion.rates.INR
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.INR * baseCurrencyValue
                 }
                 is ISK -> {
-                    currency.rate = conversion.rates.ISK
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.ISK * baseCurrencyValue
                 }
                 is JPY -> {
-                    currency.rate = conversion.rates.JPY
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.JPY * baseCurrencyValue
                 }
                 is KRW -> {
-                    currency.rate = conversion.rates.KRW
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.KRW * baseCurrencyValue
                 }
                 is MXN -> {
-                    currency.rate = conversion.rates.MXN
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.MXN * baseCurrencyValue
                 }
                 is MYR -> {
-                    currency.rate = conversion.rates.MYR
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.MYR * baseCurrencyValue
                 }
                 is NOK -> {
-                    currency.rate = conversion.rates.NOK
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.NOK * baseCurrencyValue
                 }
                 is NZD -> {
-                    currency.rate = conversion.rates.NZD
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.NZD * baseCurrencyValue
                 }
                 is PHP -> {
-                    currency.rate = conversion.rates.PHP
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.PHP * baseCurrencyValue
                 }
                 is PLN -> {
-                    currency.rate = conversion.rates.PLN
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.PLN * baseCurrencyValue
                 }
                 is RON -> {
-                    currency.rate = conversion.rates.RON
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.RON * baseCurrencyValue
                 }
                 is RUB -> {
-                    currency.rate = conversion.rates.RUB
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.RUB * baseCurrencyValue
                 }
                 is SEK -> {
-                    currency.rate = conversion.rates.SEK
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.SEK * baseCurrencyValue
                 }
                 is SGD -> {
-                    currency.rate = conversion.rates.SGD
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.SGD * baseCurrencyValue
                 }
                 is THB -> {
-                    currency.rate = conversion.rates.THB
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.THB * baseCurrencyValue
                 }
                 is USD -> {
-                    currency.rate = conversion.rates.USD
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.USD * baseCurrencyValue
                 }
                 is ZAR -> {
-                    currency.rate = conversion.rates.ZAR
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.ZAR * baseCurrencyValue
                 }
             }
         }

@@ -11,6 +11,18 @@ abstract class BaseCurrency {
     abstract fun getFullName(): Int
 
     abstract fun getImagePath(): String
+
+    override fun equals(other: Any?): Boolean {
+        return (other is BaseCurrency && other.getShortName() == getShortName())
+    }
+
+    override fun hashCode(): Int {
+        return rate.hashCode() * 17 * getShortName().hashCode()
+    }
+
+    override fun toString(): String {
+        return "${getShortName()} $rate"
+    }
 }
 
 class EUR : BaseCurrency() {
