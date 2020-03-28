@@ -49,13 +49,16 @@
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="65dp"
+        android:layout_width="68dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dimen_16dp"
-        android:ems="10"
-        android:enabled="false"
         android:clickable="false"
+        android:ems="6"
+        android:enabled="false"
         android:inputType="numberDecimal"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/dimen_24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -30,10 +30,10 @@ class MainViewModel @Inject constructor(
         apiDisposable = ratesServerApi.getRatesPeriodically(baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
         rxBusDisposable = rxBus.events.subscribe { event ->
             if (event is Conversion) {
-                baseCurrency = getBaseCurrency(event.baseCurrency)
+                val currency = getBaseCurrency(event.baseCurrency)
                 if (event.baseCurrency != currenciesList[0].getShortName()) {
-                    val currency = baseCurrency
-                    currenciesList.remove(currency)
+                    baseCurrency = currency
+                    currenciesList.removeLastOccurrence(currency)
                     currenciesList.addFirst(currency)
                 }
                 updateRateValues(event)
@@ -57,7 +57,6 @@ class MainViewModel @Inject constructor(
         currenciesList.add(CNY())
         currenciesList.add(CZK())
         currenciesList.add(DKK())
-        currenciesList.add(EUR())
         currenciesList.add(GBP())
         currenciesList.add(HKD())
         currenciesList.add(HRK())
