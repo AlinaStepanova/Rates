@@ -57,6 +57,7 @@ class MainViewModel @Inject constructor(
         currenciesList.add(CNY())
         currenciesList.add(CZK())
         currenciesList.add(DKK())
+        currenciesList.add(EUR())
         currenciesList.add(GBP())
         currenciesList.add(HKD())
         currenciesList.add(HRK())
@@ -69,6 +70,7 @@ class MainViewModel @Inject constructor(
         currenciesList.add(KRW())
         currenciesList.add(MXN())
         currenciesList.add(MYR())
+        currenciesList.add(NOK())
         currenciesList.add(NZD())
         currenciesList.add(PHP())
         currenciesList.add(PLN())
@@ -84,6 +86,9 @@ class MainViewModel @Inject constructor(
     private fun updateRateValues(conversion: Conversion) {
         for (currency in currenciesList) {
             when (currency) {
+                is EUR -> {
+                    currency.rate = conversion.rates.EUR
+                }
                 is AUD -> {
                     currency.rate = conversion.rates.AUD
                 }
@@ -143,6 +148,9 @@ class MainViewModel @Inject constructor(
                 }
                 is MYR -> {
                     currency.rate = conversion.rates.MYR
+                }
+                is NOK -> {
+                    currency.rate = conversion.rates.NOK
                 }
                 is NZD -> {
                     currency.rate = conversion.rates.NZD

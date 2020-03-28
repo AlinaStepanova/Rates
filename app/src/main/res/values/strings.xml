@@ -1,3 +1,35 @@
 <resources>
     <string name="app_name">Rates</string>
+    <string name="currency_euro_title">Euro</string>
+    <string name="currency_australian_dollar_title">Australian Dollar</string>
+    <string name="currency_bulgarian_lev_title">Bulgarian Lev</string>
+    <string name="currency_brazilian_real_title">Brazilian Real</string>
+    <string name="currency_canadian_dollar_title">Canadian Dollar</string>
+    <string name="currency_swiss_franc_title">Swiss Franc</string>
+    <string name="currency_yuan_title">Yuan</string>
+    <string name="currency_czech_koruna_title">Czech Koruna</string>
+    <string name="currency_danish_krone_title">Danish Krone</string>
+    <string name="currency_pound_sterling_title">Pound Sterling</string>
+    <string name="currency_hong_kong_dollar_title">Hong Kong Dollar</string>
+    <string name="currency_croatian_kuna_title">Croatian Kuna</string>
+    <string name="currency_forint_title">Forint</string>
+    <string name="currency_rupiah_title">Rupiah</string>
+    <string name="currency_new_israeli_shekel_title">New Israeli Shekel</string>
+    <string name="currency_indian_rupee_title">Indian Rupee</string>
+    <string name="currency_iceland_krona_title">Iceland Krona</string>
+    <string name="currency_yen_title">Yen</string>
+    <string name="currency_south_korean_won_title">South Korean Won</string>
+    <string name="currency_mexican_peso_title">Mexican Peso</string>
+    <string name="currency_malaysian_ringgit_title">Malaysian Ringgit</string>
+    <string name="currency_new_zealand_dollar_title">New Zealand Dollar</string>
+    <string name="currency_philippine_peso_title">Philippine Peso</string>
+    <string name="currency_zloty_title">Zloty</string>
+    <string name="currency_leu_title">Leu</string>
+    <string name="currency_russian_ruble_title">Russian Ruble</string>
+    <string name="currency_swedish_krona_title">Swedish Krona</string>
+    <string name="currency_singapore_dollar_title">Singapore Dollar</string>
+    <string name="currency_baht_title">Baht</string>
+    <string name="currency_us_dollar_title">US Dollar</string>
+    <string name="currency_rand_title">Rand</string>
+    <string name="currency_norwegian_krone_title">Norwegian Krone</string>
 </resources>

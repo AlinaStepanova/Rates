@@ -1,5 +1,6 @@
 package com.avs.rates.ui.main
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,8 @@ interface ListItemClickListener {
 
 class RatesAdapter(rates: ArrayList<BaseCurrency>?) : RecyclerView.Adapter<RatesAdapter.RatesViewHolder>() {
 
+    private lateinit var context: Context
+
     var currencies: ArrayList<BaseCurrency>? = rates
         set(value) {
             field = value
@@ -26,7 +29,7 @@ class RatesAdapter(rates: ArrayList<BaseCurrency>?) : RecyclerView.Adapter<Rates
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RatesViewHolder {
-        val context = parent.context
+        context = parent.context
         val layoutForListItems: Int = R.layout.rate_item_list
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(layoutForListItems, parent, false)
@@ -38,7 +41,9 @@ class RatesAdapter(rates: ArrayList<BaseCurrency>?) : RecyclerView.Adapter<Rates
 
     override fun onBindViewHolder(holder: RatesViewHolder, position: Int) {
         holder.bindRate(currencies?.get(position)?.rate.toString())
-        holder.bindCurrencyFullName(currencies?.get(position)?.getFullName())
+        holder.bindCurrencyFullName(currencies?.get(position)?.getFullName()?.let {
+            context.getString(it)
+        })
         holder.bindCurrencyShortName(currencies?.get(position)?.getShortName())
         holder.bindFlagImage(currencies?.get(position)?.getImagePath())
     }

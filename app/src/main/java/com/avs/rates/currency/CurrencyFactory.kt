@@ -2,95 +2,97 @@ package com.avs.rates.currency
 
 fun getBaseCurrency(baseCurrency: String): BaseCurrency {
     when (baseCurrency) {
-        //todo create enum which holds strings
-        "AUD" -> {
+        Currency.AUD.name -> {
             return AUD()
         }
-        "BGN" -> {
+        Currency.BGN.name -> {
             return BGN()
         }
-        "BRL" -> {
+        Currency.BRL.name -> {
             return BRL()
         }
-        "CAD" -> {
+        Currency.CAD.name -> {
             return CAD()
         }
-        "CHF" -> {
+        Currency.CHF.name -> {
             return CHF()
         }
-        "CNY" -> {
+        Currency.CNY.name -> {
             return CNY()
         }
-        "CZK" -> {
+        Currency.CZK.name -> {
             return CZK()
         }
-        "DKK" -> {
+        Currency.DKK.name -> {
             return DKK()
         }
-        "GBP" -> {
+        Currency.GBP.name -> {
             return GBP()
         }
-        "HKD" -> {
+        Currency.HKD.name -> {
             return HKD()
         }
-        "HRK" -> {
+        Currency.HRK.name -> {
             return HRK()
         }
-        "HUF" -> {
+        Currency.HUF.name -> {
             return HUF()
         }
-        "IDR" -> {
+        Currency.IDR.name -> {
             return IDR()
         }
-        "ILS" -> {
+        Currency.ILS.name -> {
             return ILS()
         }
-        "INR" -> {
+        Currency.INR.name -> {
             return INR()
         }
-        "ISK" -> {
+        Currency.ISK.name -> {
             return ISK()
         }
-        "JPY" -> {
+        Currency.JPY.name -> {
             return JPY()
         }
-        "KRW" -> {
+        Currency.KRW.name -> {
             return KRW()
         }
-        "MXN" -> {
+        Currency.MXN.name -> {
             return MXN()
         }
-        "MYR" -> {
+        Currency.MYR.name -> {
             return MYR()
         }
-        "NZD" -> {
+        Currency.NOK.name -> {
+            return NOK()
+        }
+        Currency.NZD.name -> {
             return NZD()
         }
-        "PHP" -> {
+        Currency.PHP.name -> {
             return PHP()
         }
-        "PLN" -> {
+        Currency.PLN.name -> {
             return PLN()
         }
-        "RON" -> {
+        Currency.RON.name -> {
             return RON()
         }
-        "RUB" -> {
-            return NZD()
+        Currency.RUB.name -> {
+            return RUB()
         }
-        "SEK" -> {
+        Currency.SEK.name -> {
             return SEK()
         }
-        "SGD" -> {
+        Currency.SGD.name -> {
             return SGD()
         }
-        "THB" -> {
+        Currency.THB.name -> {
             return THB()
         }
-        "USD" -> {
+        Currency.USD.name -> {
             return USD()
         }
-        "ZAR" -> {
+        Currency.ZAR.name -> {
             return ZAR()
         }
     }
