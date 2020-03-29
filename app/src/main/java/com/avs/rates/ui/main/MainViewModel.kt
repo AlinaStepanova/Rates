@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.avs.rates.DEFAULT_CURRENCY
-import com.avs.rates.EMISSION_PERIOD
 import com.avs.rates.currency.*
 import com.avs.rates.network.RatesServerApi
 import com.avs.rates.network.dto.Conversion
@@ -30,15 +29,12 @@ class MainViewModel @Inject constructor(
     init {
         addCurrenciesToList()
         apiDisposable =
-            ratesServerApi.getRatesPeriodically(0, baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
+            ratesServerApi.getRatesPeriodically(baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
         rxBusDisposable = rxBus.events.subscribe { event ->
             if (event is Conversion) {
                 val currency = getBaseCurrency(event.baseCurrency)
                 if (event.baseCurrency != currenciesList[0].getShortName()) {
-                    baseCurrency = currency
-                    currenciesList.remove(currency)
-                    currency.rate = baseCurrencyValue
-                    currenciesList.addFirst(currency)
+                    updateBaseCurrency(currency)
                 }
                 updateRateValues(event, currency)
                 _conversionList.value = currenciesList
@@ -46,15 +42,20 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun changeBaseCurrency(currency: BaseCurrency) {
+    fun changeBaseCurrency(newBaseCurrency: BaseCurrency) {
         apiDisposable?.dispose()
-        baseCurrency = currency
-        currenciesList.remove(currency)
-        currenciesList.addFirst(currency)
-        apiDisposable = ratesServerApi.getRatesPeriodically(
-            EMISSION_PERIOD,
-            baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
+        baseCurrencyValue = newBaseCurrency.rate
+        updateBaseCurrency(newBaseCurrency)
+        apiDisposable =
+            ratesServerApi.getRatesPeriodically(baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
         )
+    }
+
+    private fun updateBaseCurrency(newBaseCurrency: BaseCurrency) {
+        baseCurrency = newBaseCurrency
+        currenciesList.remove(newBaseCurrency)
+        newBaseCurrency.rate = baseCurrencyValue
+        currenciesList.addFirst(newBaseCurrency)
     }
 
     override fun onCleared() {
@@ -98,10 +99,7 @@ class MainViewModel @Inject constructor(
         currenciesList.add(ZAR())
     }
 
-    private fun updateRateValues(
-        conversion: Conversion,
-        baseCurrency: BaseCurrency
-    ) {
+    private fun updateRateValues(conversion: Conversion, baseCurrency: BaseCurrency) {
         for (currency in currenciesList) {
             when (currency) {
                 is EUR -> {

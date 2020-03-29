@@ -3,11 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="currency"
             type="com.avs.rates.currency.BaseCurrency" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -64,7 +62,6 @@
             android:layout_marginEnd="@dimen/dimen_16dp"
             android:clickable="false"
             android:ems="6"
-            android:enabled="false"
             android:inputType="numberDecimal"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"

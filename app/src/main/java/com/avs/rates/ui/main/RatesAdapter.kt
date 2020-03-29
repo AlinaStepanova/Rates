@@ -5,7 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.avs.rates.R
 import com.avs.rates.currency.BaseCurrency
 import com.avs.rates.databinding.RateItemListBinding
 import com.avs.rates.utils.CircleTransform
@@ -17,7 +19,7 @@ interface ListItemClickListener {
     )
 }
 
-class RatesAdapter(rates: ArrayList<BaseCurrency>?, private val itemClickListener: ListItemClickListener) :
+class RatesAdapter(val rates: ArrayList<BaseCurrency>?, private val itemClickListener: ListItemClickListener) :
     RecyclerView.Adapter<RatesAdapter.RatesViewHolder>() {
 
     private lateinit var context: Context
@@ -49,6 +51,8 @@ class RatesAdapter(rates: ArrayList<BaseCurrency>?, private val itemClickListene
 
         init {
             binding.root.setOnClickListener(this)
+            binding.editText.setOnClickListener(this)
+            binding.editText.clearFocus()
         }
 
         fun bind(item: BaseCurrency, context: Context) {
@@ -67,7 +71,15 @@ class RatesAdapter(rates: ArrayList<BaseCurrency>?, private val itemClickListene
         }
 
         private fun bindRate(value: String) {
-            binding.editText.setText(value)
+            binding.editText.isEnabled = adapterPosition == 0
+            if (adapterPosition != 0) {
+                binding.editText.setText(value)
+            }
+            if (value == "0" || value == "0.0") {
+                binding.editText.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+            } else {
+                binding.editText.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+            }
         }
 
         private fun bindFlagImage(imageUrl: String?) {
@@ -85,6 +97,5 @@ class RatesAdapter(rates: ArrayList<BaseCurrency>?, private val itemClickListene
                 notifyItemMoved(clickedPosition, 0)
             }
         }
-
     }
 }
