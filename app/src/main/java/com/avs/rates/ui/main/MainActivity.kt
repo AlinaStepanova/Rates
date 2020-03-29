@@ -5,12 +5,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.avs.rates.R
 import com.avs.rates.RatesApplication
+import com.avs.rates.currency.BaseCurrency
 import com.avs.rates.databinding.ActivityMainBinding
 import com.avs.rates.di.ViewModelFactory
 import com.avs.rates.ui.BaseActivity
 import javax.inject.Inject
 
-class MainActivity : BaseActivity() {
+
+class MainActivity : BaseActivity(), ListItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory<MainViewModel>
@@ -24,7 +26,7 @@ class MainActivity : BaseActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.mainViewModel = viewModel
         binding.lifecycleOwner = this
-        val adapter = RatesAdapter(null)
+        val adapter = RatesAdapter(null, this)
         binding.recyclerView.adapter = adapter
 
         viewModel.conversion.observe(this, Observer {
@@ -32,5 +34,10 @@ class MainActivity : BaseActivity() {
                 adapter.currencies = ArrayList(it)
             }
         })
+    }
+
+    override fun onListItemClick(newBaseCurrency: BaseCurrency) {
+        viewModel.changeBaseCurrency(newBaseCurrency)
+        binding.recyclerView.layoutManager?.scrollToPosition(0)
     }
 }

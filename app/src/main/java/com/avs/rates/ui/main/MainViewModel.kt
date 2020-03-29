@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.avs.rates.DEFAULT_CURRENCY
+import com.avs.rates.EMISSION_PERIOD
 import com.avs.rates.currency.*
 import com.avs.rates.network.RatesServerApi
 import com.avs.rates.network.dto.Conversion
@@ -13,7 +14,7 @@ import java.util.*
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    ratesServerApi: RatesServerApi,
+    private val ratesServerApi: RatesServerApi,
     rxBus: RxBus
 ) : ViewModel() {
 
@@ -22,14 +23,14 @@ class MainViewModel @Inject constructor(
     private var baseCurrency: BaseCurrency? = null
     private var baseCurrencyValue = 1.0
     private var currenciesList = LinkedList<BaseCurrency>()
-    private var _conversion = MutableLiveData<List<BaseCurrency>>()
+    private var _conversionList = MutableLiveData<List<BaseCurrency>>()
     val conversion: LiveData<List<BaseCurrency>>
-        get() = _conversion
+        get() = _conversionList
 
     init {
         addCurrenciesToList()
         apiDisposable =
-            ratesServerApi.getRatesPeriodically(baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
+            ratesServerApi.getRatesPeriodically(0, baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
         rxBusDisposable = rxBus.events.subscribe { event ->
             if (event is Conversion) {
                 val currency = getBaseCurrency(event.baseCurrency)
@@ -40,9 +41,20 @@ class MainViewModel @Inject constructor(
                     currenciesList.addFirst(currency)
                 }
                 updateRateValues(event, currency)
-                _conversion.value = currenciesList
+                _conversionList.value = currenciesList
             }
         }
+    }
+
+    fun changeBaseCurrency(currency: BaseCurrency) {
+        apiDisposable?.dispose()
+        baseCurrency = currency
+        currenciesList.remove(currency)
+        currenciesList.addFirst(currency)
+        apiDisposable = ratesServerApi.getRatesPeriodically(
+            EMISSION_PERIOD,
+            baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
+        )
     }
 
     override fun onCleared() {
