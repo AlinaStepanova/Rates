@@ -43,4 +43,8 @@ class MainActivity : BaseActivity(), ListItemClickListener {
         viewModel.changeBaseCurrency(newBaseCurrency)
         binding.recyclerView.layoutManager?.scrollToPosition(0)
     }
+
+    override fun onEditTextChanged(text: String) {
+        viewModel.updateBaseCurrencyValue(text)
+    }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.avs.rates.DEFAULT_CURRENCY
+import com.avs.rates.EMISSION_PERIOD
 import com.avs.rates.currency.*
 import com.avs.rates.network.RatesServerApi
 import com.avs.rates.network.dto.Conversion
@@ -29,7 +30,8 @@ class MainViewModel @Inject constructor(
     init {
         addCurrenciesToList()
         apiDisposable =
-            ratesServerApi.getRatesPeriodically(baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
+            ratesServerApi.getRatesPeriodically(0,
+                baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
         rxBusDisposable = rxBus.events.subscribe { event ->
             if (event is Conversion) {
                 val currency = getBaseCurrency(event.baseCurrency)
@@ -46,8 +48,8 @@ class MainViewModel @Inject constructor(
         apiDisposable?.dispose()
         baseCurrencyValue = newBaseCurrency.rate
         updateBaseCurrency(newBaseCurrency)
-        apiDisposable =
-            ratesServerApi.getRatesPeriodically(baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
+        apiDisposable = ratesServerApi.getRatesPeriodically(EMISSION_PERIOD,
+            baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
         )
     }
 
@@ -62,6 +64,19 @@ class MainViewModel @Inject constructor(
         apiDisposable?.dispose()
         rxBusDisposable?.dispose()
         super.onCleared()
+    }
+
+    fun updateBaseCurrencyValue(text: String) {
+        val value = text.trim()
+        if (value.isNotEmpty()) {
+            val doubleValue = value.toDoubleOrNull()
+            if (doubleValue != null) {
+                //todo provide formatting
+                baseCurrencyValue = doubleValue
+            }
+        } else {
+            baseCurrencyValue = 0.0
+        }
     }
 
     private fun addCurrenciesToList() {

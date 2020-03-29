@@ -1,27 +1,31 @@
 package com.avs.rates.ui.main
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.avs.rates.R
 import com.avs.rates.currency.BaseCurrency
 import com.avs.rates.databinding.RateItemListBinding
 import com.avs.rates.utils.CircleTransform
 import com.squareup.picasso.Picasso
 
 interface ListItemClickListener {
-    fun onListItemClick(
-        newBaseCurrency: BaseCurrency
-    )
+    fun onListItemClick(newBaseCurrency: BaseCurrency)
+    fun onEditTextChanged(text: String)
 }
 
-class RatesAdapter(val rates: ArrayList<BaseCurrency>?, private val itemClickListener: ListItemClickListener) :
+class RatesAdapter(
+    val rates: ArrayList<BaseCurrency>?,
+    private val itemClickListener: ListItemClickListener
+) :
     RecyclerView.Adapter<RatesAdapter.RatesViewHolder>() {
 
     private lateinit var context: Context
+    private var textWatcher = getTextWatcher()
 
     var currencies: ArrayList<BaseCurrency>? = rates
         set(value) {
@@ -70,13 +74,12 @@ class RatesAdapter(val rates: ArrayList<BaseCurrency>?, private val itemClickLis
         }
 
         private fun bindRate(value: String) {
+            binding.editText.removeTextChangedListener(textWatcher)
             binding.editText.isEnabled = adapterPosition == 0
             binding.editText.setText(value)
-            //todo make formatting
-            if (value == "0" || value == "0.0") {
-                binding.editText.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
-            } else {
-                binding.editText.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+            if (adapterPosition == 0) {
+                binding.editText.addTextChangedListener(textWatcher)
+                itemClickListener.onEditTextChanged(binding.editText.text.toString())
             }
         }
 
@@ -96,9 +99,21 @@ class RatesAdapter(val rates: ArrayList<BaseCurrency>?, private val itemClickLis
                 bindViewHolder(this, 0)
                 bindViewHolder(this, clickedPosition)
             }
-            if (clickedPosition == 0 && !currencies.isNullOrEmpty() && view != null) {
-                if (view.id == binding.editText.id && clickedPosition != 0) {
+        }
+    }
 
+    private fun getTextWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+            override fun onTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (charSequence != null) {
+                    // todo provide formatting
+                    itemClickListener.onEditTextChanged(charSequence.toString())
                 }
             }
         }

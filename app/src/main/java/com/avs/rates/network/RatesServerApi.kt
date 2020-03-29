@@ -17,7 +17,7 @@ class RatesServerApi @Inject constructor(
     private val rxBus: RxBus
 ) {
 
-    fun getRatesPeriodically(baseCurrency: String): Disposable {
+    fun getRatesPeriodically(initialDelay: Long, baseCurrency: String): Disposable {
         return Observable.interval(0, EMISSION_PERIOD, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
