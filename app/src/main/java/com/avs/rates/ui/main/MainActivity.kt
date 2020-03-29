@@ -3,6 +3,7 @@ package com.avs.rates.ui.main
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.avs.rates.R
 import com.avs.rates.RatesApplication
 import com.avs.rates.currency.BaseCurrency
@@ -31,12 +32,14 @@ class MainActivity : BaseActivity(), ListItemClickListener {
 
         viewModel.conversion.observe(this, Observer {
             it?.let {
+                binding.recyclerView.itemAnimator = null
                 adapter.currencies = ArrayList(it)
             }
         })
     }
 
     override fun onListItemClick(newBaseCurrency: BaseCurrency) {
+        binding.recyclerView.itemAnimator = DefaultItemAnimator()
         viewModel.changeBaseCurrency(newBaseCurrency)
         binding.recyclerView.layoutManager?.scrollToPosition(0)
     }

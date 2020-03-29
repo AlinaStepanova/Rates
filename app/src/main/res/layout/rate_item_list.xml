@@ -62,6 +62,7 @@
             android:layout_marginEnd="@dimen/dimen_16dp"
             android:clickable="false"
             android:ems="6"
+            android:enabled="true"
             android:inputType="numberDecimal"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"

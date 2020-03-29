@@ -1,7 +1,6 @@
 package com.avs.rates.ui.main
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +26,7 @@ class RatesAdapter(val rates: ArrayList<BaseCurrency>?, private val itemClickLis
     var currencies: ArrayList<BaseCurrency>? = rates
         set(value) {
             field = value
-            notifyDataSetChanged()
+            notifyItemRangeChanged(1, (currencies?.size?.minus(1) ?: 0))
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RatesViewHolder {
@@ -72,9 +71,8 @@ class RatesAdapter(val rates: ArrayList<BaseCurrency>?, private val itemClickLis
 
         private fun bindRate(value: String) {
             binding.editText.isEnabled = adapterPosition == 0
-            if (adapterPosition != 0) {
-                binding.editText.setText(value)
-            }
+            binding.editText.setText(value)
+            //todo make formatting
             if (value == "0" || value == "0.0") {
                 binding.editText.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
             } else {
@@ -95,6 +93,13 @@ class RatesAdapter(val rates: ArrayList<BaseCurrency>?, private val itemClickLis
             if (clickedPosition != 0 && !currencies.isNullOrEmpty()) {
                 itemClickListener.onListItemClick(currencies!![clickedPosition])
                 notifyItemMoved(clickedPosition, 0)
+                bindViewHolder(this, 0)
+                bindViewHolder(this, clickedPosition)
+            }
+            if (clickedPosition == 0 && !currencies.isNullOrEmpty() && view != null) {
+                if (view.id == binding.editText.id && clickedPosition != 0) {
+
+                }
             }
         }
     }
