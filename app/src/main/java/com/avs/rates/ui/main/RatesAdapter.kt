@@ -3,6 +3,7 @@ package com.avs.rates.ui.main
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.avs.rates.currency.BaseCurrency
 import com.avs.rates.databinding.RateItemListBinding
 import com.avs.rates.utils.CircleTransform
+import com.avs.rates.utils.doubleToString
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -64,7 +66,7 @@ class RatesAdapter(
         }
 
         fun bind(item: BaseCurrency, context: Context) {
-            bindRate(item.rate.toString())
+            bindRate(doubleToString(item.rate))
             bindCurrencyFullName(item.getFullName().let { context.getString(it) })
             bindCurrencyShortName(item.getShortName())
             bindFlagImage(item.getImagePath())
@@ -127,7 +129,6 @@ class RatesAdapter(
 
             override fun onTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (charSequence != null) {
-                    // todo provide formatting
                     itemClickListener.onEditTextChanged(charSequence.toString())
                 }
             }

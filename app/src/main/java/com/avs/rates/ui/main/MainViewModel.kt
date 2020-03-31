@@ -99,16 +99,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun updateBaseCurrencyValue(text: String) {
-        val value = text.trim()
-        if (value.isNotEmpty()) {
-            val doubleValue = value.toDoubleOrNull()
-            if (doubleValue != null) {
-                //todo provide formatting
-                baseCurrencyValue = doubleValue
-            }
-        } /*else {
-            baseCurrencyValue = 0.0
-        }*/
+        baseCurrencyValue = text.toDoubleOrNull() ?: -1.0
     }
 
     private fun updateRateValues(conversion: Conversion, baseCurrency: BaseCurrency) {
