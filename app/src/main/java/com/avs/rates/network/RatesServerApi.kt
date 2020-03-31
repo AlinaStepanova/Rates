@@ -18,7 +18,7 @@ class RatesServerApi @Inject constructor(
 ) {
 
     fun getRatesPeriodically(initialDelay: Long, baseCurrency: String): Disposable {
-        return Observable.interval(0, EMISSION_PERIOD, TimeUnit.MILLISECONDS)
+        return Observable.interval(initialDelay, EMISSION_PERIOD, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { getRates(baseCurrency) }

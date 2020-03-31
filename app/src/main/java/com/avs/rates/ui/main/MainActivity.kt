@@ -10,6 +10,7 @@ import com.avs.rates.currency.BaseCurrency
 import com.avs.rates.databinding.ActivityMainBinding
 import com.avs.rates.di.ViewModelFactory
 import com.avs.rates.ui.BaseActivity
+import java.util.*
 import javax.inject.Inject
 
 
@@ -33,14 +34,21 @@ class MainActivity : BaseActivity(), ListItemClickListener {
         viewModel.conversion.observe(this, Observer {
             it?.let {
                 binding.recyclerView.itemAnimator = null
-                adapter.currencies = ArrayList(it)
+                adapter.setCurrencies(LinkedList(it))
+            }
+        })
+
+        viewModel.updateBaseCurrencyItemEvent.observe(this, Observer {
+            it?.let {
+                binding.recyclerView.itemAnimator = null
+                adapter.updateTopItems()
             }
         })
     }
 
     override fun onListItemClick(newBaseCurrency: BaseCurrency) {
         binding.recyclerView.itemAnimator = DefaultItemAnimator()
-        viewModel.changeBaseCurrency(newBaseCurrency)
+        viewModel.updateRates(newBaseCurrency)
         binding.recyclerView.layoutManager?.scrollToPosition(0)
     }
 

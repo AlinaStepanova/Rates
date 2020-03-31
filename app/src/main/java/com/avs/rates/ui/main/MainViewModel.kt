@@ -9,8 +9,12 @@ import com.avs.rates.currency.*
 import com.avs.rates.network.RatesServerApi
 import com.avs.rates.network.dto.Conversion
 import com.avs.rates.utils.RxBus
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -20,18 +24,24 @@ class MainViewModel @Inject constructor(
 
     private var apiDisposable: Disposable? = null
     private var rxBusDisposable: Disposable? = null
+    private var delayDisposable: Disposable? = null
     private var baseCurrency: BaseCurrency? = null
     private var baseCurrencyValue = 1.0
     private var currenciesList = LinkedList<BaseCurrency>()
     private var _conversionList = MutableLiveData<List<BaseCurrency>>()
     val conversion: LiveData<List<BaseCurrency>>
         get() = _conversionList
+    private var _updateBaseCurrencyItemEvent = MutableLiveData<Boolean>()
+    val updateBaseCurrencyItemEvent: LiveData<Boolean>
+        get() = _updateBaseCurrencyItemEvent
 
     init {
+        _updateBaseCurrencyItemEvent.value = false
         addCurrenciesToList()
         apiDisposable =
-            ratesServerApi.getRatesPeriodically(0,
-                baseCurrency?.getShortName() ?: DEFAULT_CURRENCY)
+            ratesServerApi.getRatesPeriodically(
+                0, baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
+            )
         rxBusDisposable = rxBus.events.subscribe { event ->
             if (event is Conversion) {
                 val currency = getBaseCurrency(event.baseCurrency)
@@ -44,12 +54,20 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun changeBaseCurrency(newBaseCurrency: BaseCurrency) {
+    override fun onCleared() {
         apiDisposable?.dispose()
-        baseCurrencyValue = newBaseCurrency.rate
-        updateBaseCurrency(newBaseCurrency)
-        apiDisposable = ratesServerApi.getRatesPeriodically(EMISSION_PERIOD,
-            baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
+        rxBusDisposable?.dispose()
+        delayDisposable?.dispose()
+        super.onCleared()
+    }
+
+    private fun addCurrenciesToList() {
+        currenciesList.addAll(
+            listOf(
+                AUD(), BGN(), BRL(), CAD(), CHF(), CNY(), CZK(), DKK(), EUR(), GBP(), HKD(), HRK(),
+                HUF(), IDR(), ILS(), INR(), ISK(), JPY(), KRW(), MXN(), MYR(), NOK(), NZD(), PHP(),
+                PLN(), RON(), RUB(), SEK(), SGD(), THB(), USD(), ZAR()
+            )
         )
     }
 
@@ -60,10 +78,24 @@ class MainViewModel @Inject constructor(
         currenciesList.addFirst(newBaseCurrency)
     }
 
-    override fun onCleared() {
+    fun updateRates(newBaseCurrency: BaseCurrency) {
         apiDisposable?.dispose()
-        rxBusDisposable?.dispose()
-        super.onCleared()
+        delayDisposable?.dispose()
+        baseCurrencyValue = newBaseCurrency.rate
+        updateBaseCurrency(newBaseCurrency)
+        delayDisposable = updateRecyclerView()
+        apiDisposable = ratesServerApi.getRatesPeriodically(
+            EMISSION_PERIOD, baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
+        )
+    }
+
+    private fun updateRecyclerView(): Disposable {
+        return Completable.complete()
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .delay(EMISSION_PERIOD / 2, TimeUnit.MILLISECONDS)
+            .doOnComplete { _updateBaseCurrencyItemEvent.postValue(true) }
+            .subscribe()
     }
 
     fun updateBaseCurrencyValue(text: String) {
@@ -74,44 +106,9 @@ class MainViewModel @Inject constructor(
                 //todo provide formatting
                 baseCurrencyValue = doubleValue
             }
-        } else {
+        } /*else {
             baseCurrencyValue = 0.0
-        }
-    }
-
-    private fun addCurrenciesToList() {
-        currenciesList.add(AUD())
-        currenciesList.add(BGN())
-        currenciesList.add(BRL())
-        currenciesList.add(CAD())
-        currenciesList.add(CHF())
-        currenciesList.add(CNY())
-        currenciesList.add(CZK())
-        currenciesList.add(DKK())
-        currenciesList.add(EUR())
-        currenciesList.add(GBP())
-        currenciesList.add(HKD())
-        currenciesList.add(HRK())
-        currenciesList.add(HUF())
-        currenciesList.add(IDR())
-        currenciesList.add(ILS())
-        currenciesList.add(INR())
-        currenciesList.add(ISK())
-        currenciesList.add(JPY())
-        currenciesList.add(KRW())
-        currenciesList.add(MXN())
-        currenciesList.add(MYR())
-        currenciesList.add(NOK())
-        currenciesList.add(NZD())
-        currenciesList.add(PHP())
-        currenciesList.add(PLN())
-        currenciesList.add(RON())
-        currenciesList.add(RUB())
-        currenciesList.add(SEK())
-        currenciesList.add(SGD())
-        currenciesList.add(THB())
-        currenciesList.add(USD())
-        currenciesList.add(ZAR())
+        }*/
     }
 
     private fun updateRateValues(conversion: Conversion, baseCurrency: BaseCurrency) {

@@ -3,7 +3,6 @@ package com.avs.rates.ui.main
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import com.avs.rates.currency.BaseCurrency
 import com.avs.rates.databinding.RateItemListBinding
 import com.avs.rates.utils.CircleTransform
 import com.squareup.picasso.Picasso
+import java.util.*
 
 interface ListItemClickListener {
     fun onListItemClick(newBaseCurrency: BaseCurrency)
@@ -19,19 +19,19 @@ interface ListItemClickListener {
 }
 
 class RatesAdapter(
-    val rates: ArrayList<BaseCurrency>?,
+    currencyList: LinkedList<BaseCurrency>?,
     private val itemClickListener: ListItemClickListener
 ) :
     RecyclerView.Adapter<RatesAdapter.RatesViewHolder>() {
 
     private lateinit var context: Context
     private var textWatcher = getTextWatcher()
+    private var currencies: LinkedList<BaseCurrency>? = currencyList
 
-    var currencies: ArrayList<BaseCurrency>? = rates
-        set(value) {
-            field = value
-            notifyItemRangeChanged(1, (currencies?.size?.minus(1) ?: 0))
-        }
+    fun setCurrencies(rates: LinkedList<BaseCurrency>?) {
+        this.currencies = rates
+        notifyItemRangeChanged(1, (currencies?.size?.minus(1) ?: 0))
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RatesViewHolder {
         context = parent.context
@@ -47,6 +47,11 @@ class RatesAdapter(
         if (item != null) {
             holder.bind(item, context)
         }
+    }
+
+    fun updateTopItems() {
+        notifyItemChanged(0)
+        notifyItemChanged(1)
     }
 
     inner class RatesViewHolder(private val binding: RateItemListBinding) :
@@ -94,22 +99,32 @@ class RatesAdapter(
         override fun onClick(view: View?) {
             val clickedPosition = adapterPosition
             if (clickedPosition != 0 && !currencies.isNullOrEmpty()) {
-                itemClickListener.onListItemClick(currencies!![clickedPosition])
+                val clickedCurrency = currencies!![clickedPosition]
+                itemClickListener.onListItemClick(clickedCurrency)
                 notifyItemMoved(clickedPosition, 0)
-                bindViewHolder(this, 0)
-                bindViewHolder(this, clickedPosition)
+                updateCurrencies(clickedPosition, clickedCurrency)
             }
+
         }
+    }
+
+    private fun updateCurrencies(
+        clickedPosition: Int,
+        clickedCurrency: BaseCurrency
+    ) {
+        val currenciesCopy = LinkedList(currencies)
+        currenciesCopy.removeAt(clickedPosition)
+        currenciesCopy.addFirst(clickedCurrency)
+        currencies = currenciesCopy
     }
 
     private fun getTextWatcher(): TextWatcher {
         return object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-            }
 
+            override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
             }
+
             override fun onTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (charSequence != null) {
                     // todo provide formatting
