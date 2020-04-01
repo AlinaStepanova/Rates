@@ -21,7 +21,7 @@ abstract class BaseCurrency {
     }
 
     override fun toString(): String {
-        return "${getShortName()} $rate"
+        return getShortName()
     }
 }
 

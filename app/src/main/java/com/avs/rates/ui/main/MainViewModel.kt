@@ -27,6 +27,7 @@ class MainViewModel @Inject constructor(
     private var delayDisposable: Disposable? = null
     private var baseCurrency: BaseCurrency? = null
     private var baseCurrencyValue = 1.0
+    private var isBaseCurrencyChanged = false
     private var currenciesList = LinkedList<BaseCurrency>()
     private var _conversionList = MutableLiveData<List<BaseCurrency>>()
     val conversion: LiveData<List<BaseCurrency>>
@@ -36,7 +37,6 @@ class MainViewModel @Inject constructor(
         get() = _updateBaseCurrencyItemEvent
 
     init {
-        _updateBaseCurrencyItemEvent.value = false
         addCurrenciesToList()
         apiDisposable =
             ratesServerApi.getRatesPeriodically(
@@ -44,12 +44,7 @@ class MainViewModel @Inject constructor(
             )
         rxBusDisposable = rxBus.events.subscribe { event ->
             if (event is Conversion) {
-                val currency = getBaseCurrency(event.baseCurrency)
-                if (event.baseCurrency != currenciesList[0].getShortName()) {
-                    updateBaseCurrency(currency)
-                }
-                updateRateValues(event, currency)
-                _conversionList.value = currenciesList
+                handleServerResponse(event)
             }
         }
     }
@@ -69,6 +64,20 @@ class MainViewModel @Inject constructor(
                 PLN(), RON(), RUB(), SEK(), SGD(), THB(), USD(), ZAR()
             )
         )
+    }
+
+    private fun handleServerResponse(event: Conversion) {
+        val currency = getBaseCurrency(event.baseCurrency)
+        isBaseCurrencyChanged = false
+        if (event.baseCurrency != currenciesList[0].getShortName()) {
+            updateBaseCurrency(currency)
+            isBaseCurrencyChanged = true
+        }
+        updateRateValues(event, currency)
+        _conversionList.value = currenciesList
+        if (isBaseCurrencyChanged) {
+            _updateBaseCurrencyItemEvent.value = true
+        }
     }
 
     private fun updateBaseCurrency(newBaseCurrency: BaseCurrency) {
