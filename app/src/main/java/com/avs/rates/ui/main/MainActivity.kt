@@ -30,6 +30,7 @@ class MainActivity : BaseActivity(), ListItemClickListener {
         binding.lifecycleOwner = this
         val adapter = RatesAdapter(null, this)
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.itemAnimator = null
 
         viewModel.conversion.observe(this, Observer {
             it?.let {

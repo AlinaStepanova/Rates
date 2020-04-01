@@ -31,6 +31,11 @@ class RatesAdapter(
     private var currencies: LinkedList<BaseCurrency>? = currencyList
 
     fun setCurrencies(rates: LinkedList<BaseCurrency>?) {
+        /*val c1 = currencies?.first
+        val c2 = rates?.first
+        if (c1 != c2 && c1 != null) {
+            rates?.set(0, c1)
+        }*/
         this.currencies = rates
         notifyItemRangeChanged(1, (currencies?.size?.minus(1) ?: 0))
     }
@@ -83,6 +88,7 @@ class RatesAdapter(
         private fun bindRate(value: String) {
             binding.editText.removeTextChangedListener(textWatcher)
             binding.editText.isEnabled = adapterPosition == 0
+            binding.editText.clearFocus()
             binding.editText.setText(value)
             if (adapterPosition == 0) {
                 binding.editText.addTextChangedListener(textWatcher)
