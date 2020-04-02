@@ -22,19 +22,19 @@ class MainViewModel @Inject constructor(
     rxBus: RxBus
 ) : ViewModel() {
 
-    private var apiDisposable: Disposable? = null
-    private var rxBusDisposable: Disposable? = null
-    private var delayDisposable: Disposable? = null
     private var baseCurrency: BaseCurrency? = null
     private var baseCurrencyValue = 1.0
-    private var isBaseCurrencyChanged = false
     private var currenciesList = LinkedList<BaseCurrency>()
     private var _conversionList = MutableLiveData<List<BaseCurrency>>()
     val conversion: LiveData<List<BaseCurrency>>
         get() = _conversionList
-    private var _updateBaseCurrencyItemEvent = MutableLiveData<Boolean>()
-    val updateBaseCurrencyItemEvent: LiveData<Boolean>
-        get() = _updateBaseCurrencyItemEvent
+    private var _updateBaseCurrencyEvent = MutableLiveData<Boolean>()
+    val updateBaseCurrencyEvent: LiveData<Boolean>
+        get() = _updateBaseCurrencyEvent
+    private var isBaseCurrencyChanged = false
+    private var apiDisposable: Disposable? = null
+    private var rxBusDisposable: Disposable? = null
+    private var delayDisposable: Disposable? = null
 
     init {
         addCurrenciesToList()
@@ -42,9 +42,9 @@ class MainViewModel @Inject constructor(
             ratesServerApi.getRatesPeriodically(
                 0, baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
             )
-        rxBusDisposable = rxBus.events.subscribe { event ->
-            if (event is Conversion) {
-                handleServerResponse(event)
+        rxBusDisposable = rxBus.events.subscribe { conversion ->
+            if (conversion is Conversion) {
+                handleServerResponse(conversion)
             }
         }
     }
@@ -66,17 +66,17 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    private fun handleServerResponse(event: Conversion) {
-        val currency = getBaseCurrency(event.baseCurrency)
+    private fun handleServerResponse(conversion: Conversion) {
+        val currency = getBaseCurrency(conversion.baseCurrency)
         isBaseCurrencyChanged = false
-        if (event.baseCurrency != currenciesList[0].getShortName()) {
+        if (currency != baseCurrency) {
             updateBaseCurrency(currency)
             isBaseCurrencyChanged = true
         }
-        updateRateValues(event, currency)
+        updateRatesValue(conversion, currency)
         _conversionList.value = currenciesList
         if (isBaseCurrencyChanged) {
-            _updateBaseCurrencyItemEvent.value = true
+            _updateBaseCurrencyEvent.value = true
         }
     }
 
@@ -103,7 +103,7 @@ class MainViewModel @Inject constructor(
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
             .delay(EMISSION_PERIOD / 2, TimeUnit.MILLISECONDS)
-            .doOnComplete { _updateBaseCurrencyItemEvent.postValue(true) }
+            .doOnComplete { _updateBaseCurrencyEvent.postValue(true) }
             .subscribe()
     }
 
@@ -111,7 +111,7 @@ class MainViewModel @Inject constructor(
         baseCurrencyValue = text.toDoubleOrNull() ?: -1.0
     }
 
-    private fun updateRateValues(conversion: Conversion, baseCurrency: BaseCurrency) {
+    private fun updateRatesValue(conversion: Conversion, baseCurrency: BaseCurrency) {
         for (currency in currenciesList) {
             when (currency) {
                 is EUR -> {
@@ -143,8 +143,8 @@ class MainViewModel @Inject constructor(
                         currency.rate = conversion.rates.CNY * baseCurrencyValue
                 }
                 is CZK -> {
-                    if (currency != baseCurrency) currency.rate =
-                        conversion.rates.CZK * baseCurrencyValue
+                    if (currency != baseCurrency)
+                        currency.rate = conversion.rates.CZK * baseCurrencyValue
                 }
                 is DKK -> {
                     if (currency != baseCurrency)

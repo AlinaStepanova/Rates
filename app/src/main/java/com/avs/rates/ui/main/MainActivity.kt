@@ -41,7 +41,7 @@ class MainActivity : BaseActivity(), RatesListener {
             }
         })
 
-        viewModel.updateBaseCurrencyItemEvent.observe(this, Observer {
+        viewModel.updateBaseCurrencyEvent.observe(this, Observer {
             it?.let {
                 binding.recyclerView.itemAnimator = null
                 adapter.updateTopItems()
