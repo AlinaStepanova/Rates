@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="currency"
             type="com.avs.rates.currency.BaseCurrency" />
@@ -23,6 +24,7 @@
             android:layout_marginBottom="@dimen/dimen_16dp"
             android:background="@drawable/shape_oval"
             android:backgroundTint="@color/colorPrimaryDark"
+            android:contentDescription="@string/flag_image_content_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -61,18 +63,18 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dimen_16dp"
             android:clickable="false"
-            android:minEms="2"
+            android:enabled="false"
+            android:hint="@string/edit_text_hint"
+            android:inputType="numberDecimal"
             android:maxEms="7"
             android:maxLength="12"
-            android:enabled="true"
-            android:inputType="numberDecimal"
+            android:minEms="2"
             android:textAlignment="textEnd"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/dimen_20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:hint="@string/edit_text_hint" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

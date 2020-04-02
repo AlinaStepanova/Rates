@@ -33,4 +33,5 @@
     <string name="currency_rand_title">Rand</string>
     <string name="currency_norwegian_krone_title">Norwegian Krone</string>
     <string name="edit_text_hint">0</string>
+    <string name="flag_image_content_description">Flag image</string>
 </resources>

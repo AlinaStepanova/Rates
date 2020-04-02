@@ -14,12 +14,13 @@ import java.util.*
 import javax.inject.Inject
 
 
-class MainActivity : BaseActivity(), ListItemClickListener {
+class MainActivity : BaseActivity(), RatesListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory<MainViewModel>
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
+    private lateinit var defaultItemAnimator: DefaultItemAnimator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as RatesApplication).appComponent.inject(this)
@@ -28,7 +29,8 @@ class MainActivity : BaseActivity(), ListItemClickListener {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.mainViewModel = viewModel
         binding.lifecycleOwner = this
-        val adapter = RatesAdapter(null, this)
+        defaultItemAnimator = DefaultItemAnimator()
+        val adapter = CurrenciesAdapter(null, this)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.itemAnimator = null
 
@@ -48,7 +50,7 @@ class MainActivity : BaseActivity(), ListItemClickListener {
     }
 
     override fun onListItemClick(newBaseCurrency: BaseCurrency) {
-        binding.recyclerView.itemAnimator = DefaultItemAnimator()
+        binding.recyclerView.itemAnimator = defaultItemAnimator
         viewModel.updateRates(newBaseCurrency)
         binding.recyclerView.layoutManager?.scrollToPosition(0)
     }
