@@ -34,4 +34,7 @@
     <string name="currency_norwegian_krone_title">Norwegian Krone</string>
     <string name="edit_text_hint">0</string>
     <string name="flag_image_content_description">Flag image</string>
+    <string name="network_error_image_content_description">Network error image</string>
+    <string name="error_network_connection_text">Please, check network connection</string>
+    <string name="error_server_connection_text">A network error has occurred</string>
 </resources>

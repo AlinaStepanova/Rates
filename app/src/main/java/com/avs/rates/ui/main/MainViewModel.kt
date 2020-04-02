@@ -1,11 +1,13 @@
 package com.avs.rates.ui.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.avs.rates.DEFAULT_CURRENCY
 import com.avs.rates.EMISSION_PERIOD
 import com.avs.rates.currency.*
+import com.avs.rates.network.ErrorType
 import com.avs.rates.network.RatesServerApi
 import com.avs.rates.network.dto.Conversion
 import com.avs.rates.utils.RxBus
@@ -31,6 +33,9 @@ class MainViewModel @Inject constructor(
     private var _updateBaseCurrencyEvent = MutableLiveData<Boolean>()
     val updateBaseCurrencyEvent: LiveData<Boolean>
         get() = _updateBaseCurrencyEvent
+    private var _networkErrorEvent = MutableLiveData<ErrorType>()
+    val networkErrorEvent: LiveData<ErrorType>
+        get() = _networkErrorEvent
     private var isBaseCurrencyChanged = false
     private var apiDisposable: Disposable? = null
     private var rxBusDisposable: Disposable? = null
@@ -42,9 +47,14 @@ class MainViewModel @Inject constructor(
             ratesServerApi.getRatesPeriodically(
                 0, baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
             )
-        rxBusDisposable = rxBus.events.subscribe { conversion ->
-            if (conversion is Conversion) {
-                handleServerResponse(conversion)
+        rxBusDisposable = rxBus.events.subscribe { event ->
+            if (event is Conversion) {
+                _networkErrorEvent.value = null
+                handleServerResponse(event)
+            } else if (event is ErrorType) {
+                if (_conversionList.value == null) {
+                    _networkErrorEvent.value = event
+                }
             }
         }
     }

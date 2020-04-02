@@ -11,4 +11,6 @@
     <dimen name="dimen_12dp">12dp</dimen>
     <dimen name="dimen_14dp">14dp</dimen>
     <dimen name="dimen_16dp">16dp</dimen>
+    <dimen name="dimen_32dp">32dp</dimen>
+    <dimen name="dimen_56dp">56dp</dimen>
 </resources>

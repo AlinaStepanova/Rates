@@ -1,6 +1,7 @@
 package com.avs.rates.network
 
 import android.util.Log
+import com.avs.rates.BuildConfig
 import com.avs.rates.EMISSION_PERIOD
 import com.avs.rates.network.dto.Conversion
 import com.avs.rates.utils.RxBus
@@ -35,11 +36,18 @@ class RatesServerApi @Inject constructor(
     private fun checkResponse(response: Response<Conversion>) {
         if (response.body() != null && response.isSuccessful) {
             rxBus.send(response.body()!!)
+        } else {
+            rxBus.send(ErrorType.SERVER)
         }
     }
 
     private fun handleError(error: Throwable?) {
-        Log.d(this.javaClass.simpleName, error.toString())
+        if (error != null) {
+            rxBus.send(ErrorType.NETWORK)
+        }
+        if (BuildConfig.DEBUG) {
+            Log.d(this.javaClass.simpleName, error.toString())
+        }
     }
 
 }

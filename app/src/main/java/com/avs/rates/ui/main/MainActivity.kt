@@ -1,6 +1,7 @@
 package com.avs.rates.ui.main
 
 import android.os.Bundle
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -9,6 +10,7 @@ import com.avs.rates.RatesApplication
 import com.avs.rates.currency.BaseCurrency
 import com.avs.rates.databinding.ActivityMainBinding
 import com.avs.rates.di.ViewModelFactory
+import com.avs.rates.network.ErrorType
 import com.avs.rates.ui.BaseActivity
 import java.util.*
 import javax.inject.Inject
@@ -47,6 +49,10 @@ class MainActivity : BaseActivity(), RatesListener {
                 adapter.updateTopItems()
             }
         })
+
+        viewModel.networkErrorEvent.observe(this, Observer {
+            handleErrorItemsAppearance(it)
+        })
     }
 
     override fun onListItemClick(newBaseCurrency: BaseCurrency) {
@@ -57,5 +63,24 @@ class MainActivity : BaseActivity(), RatesListener {
 
     override fun onEditTextChanged(text: String) {
         viewModel.updateBaseCurrencyValue(text)
+    }
+
+    private fun handleErrorItemsAppearance(it: ErrorType?) {
+        when (it) {
+            null -> {
+                binding.ivCloud.visibility = View.INVISIBLE
+                binding.ivMessage.visibility = View.INVISIBLE
+            }
+            ErrorType.NETWORK -> {
+                binding.ivCloud.visibility = View.VISIBLE
+                binding.ivMessage.visibility = View.VISIBLE
+                binding.ivMessage.text = resources.getString(R.string.error_network_connection_text)
+            }
+            ErrorType.SERVER -> {
+                binding.ivCloud.visibility = View.INVISIBLE
+                binding.ivMessage.visibility = View.VISIBLE
+                binding.ivMessage.text = resources.getString(R.string.error_server_connection_text)
+            }
+        }
     }
 }
