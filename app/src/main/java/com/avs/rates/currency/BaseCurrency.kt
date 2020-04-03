@@ -1,10 +1,11 @@
 package com.avs.rates.currency
 
+import com.avs.rates.DEFAULT_RATE_VALUE
 import com.avs.rates.R
 
 abstract class BaseCurrency {
 
-    var rate: Double = 1.0
+    var rate: Double = DEFAULT_RATE_VALUE
 
     abstract fun getShortName(): String
 
@@ -21,7 +22,7 @@ abstract class BaseCurrency {
     }
 
     override fun toString(): String {
-        return getShortName()
+        return "${getShortName()} $rate"
     }
 }
 

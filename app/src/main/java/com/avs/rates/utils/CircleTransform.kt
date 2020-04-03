@@ -4,6 +4,9 @@ import android.graphics.*
 import com.squareup.picasso.Transformation
 import kotlin.math.min
 
+/**
+ * The utility class used by the Picasso library in order to transform the bitmap into circle
+ */
 class CircleTransform : Transformation {
 
     override fun transform(source: Bitmap): Bitmap {

@@ -13,6 +13,11 @@ import retrofit2.Response
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+/**
+ * A singleton class which encapsulates work with the networking
+ * @property ratesApi - an interface used by Retrofit library
+ * @property rxBus - event bus
+ */
 class RatesServerApi @Inject constructor(
     private val ratesApi: RatesApi,
     private val rxBus: RxBus

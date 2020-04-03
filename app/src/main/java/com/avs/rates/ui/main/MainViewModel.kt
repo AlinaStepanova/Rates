@@ -1,10 +1,10 @@
 package com.avs.rates.ui.main
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.avs.rates.DEFAULT_CURRENCY
+import com.avs.rates.DEFAULT_RATE_VALUE
 import com.avs.rates.EMISSION_PERIOD
 import com.avs.rates.currency.*
 import com.avs.rates.network.ErrorType
@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var baseCurrency: BaseCurrency? = null
-    private var baseCurrencyValue = 1.0
+    private var baseCurrencyValue = DEFAULT_RATE_VALUE
     private var currenciesList = LinkedList<BaseCurrency>()
     private var _conversionList = MutableLiveData<List<BaseCurrency>>()
     val conversion: LiveData<List<BaseCurrency>>
@@ -43,10 +43,7 @@ class MainViewModel @Inject constructor(
 
     init {
         addCurrenciesToList()
-        apiDisposable =
-            ratesServerApi.getRatesPeriodically(
-                0, baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
-            )
+        getRatesPeriodically(0)
         rxBusDisposable = rxBus.events.subscribe { event ->
             if (event is Conversion) {
                 _networkErrorEvent.value = null
@@ -66,6 +63,9 @@ class MainViewModel @Inject constructor(
         super.onCleared()
     }
 
+    /**
+     * Adds known predefined currencies to the list of currencies
+     */
     private fun addCurrenciesToList() {
         currenciesList.addAll(
             listOf(
@@ -76,6 +76,21 @@ class MainViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Makes request to the server to update the rates
+     * @param initialDelay - the initial delay time to wait before emitting the first value
+     */
+    private fun getRatesPeriodically(initialDelay: Long) {
+        apiDisposable =
+            ratesServerApi.getRatesPeriodically(
+                initialDelay, baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
+            )
+    }
+
+    /**
+     * Performs updates of the base currency and currencies list according to the latest from the server
+     * @param conversion - dto which contains latest data from the server
+     */
     private fun handleServerResponse(conversion: Conversion) {
         val currency = getBaseCurrency(conversion.baseCurrency)
         isBaseCurrencyChanged = false
@@ -90,6 +105,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * MPuts a new base currency to the first position in the currencies list
+     * @param newBaseCurrency - a new base currency selected by the user
+     */
     private fun updateBaseCurrency(newBaseCurrency: BaseCurrency) {
         baseCurrency = newBaseCurrency
         currenciesList.remove(newBaseCurrency)
@@ -97,17 +116,22 @@ class MainViewModel @Inject constructor(
         currenciesList.addFirst(newBaseCurrency)
     }
 
-    fun updateRates(newBaseCurrency: BaseCurrency) {
+    /**
+     * Resets fields depending on the new selected base currency by the user
+     * @param newBaseCurrency - a new base currency selected by the user
+     */
+    fun handleUserInteraction(newBaseCurrency: BaseCurrency) {
         apiDisposable?.dispose()
         delayDisposable?.dispose()
         baseCurrencyValue = newBaseCurrency.rate
         updateBaseCurrency(newBaseCurrency)
         delayDisposable = updateRecyclerView()
-        apiDisposable = ratesServerApi.getRatesPeriodically(
-            EMISSION_PERIOD, baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
-        )
+        getRatesPeriodically(EMISSION_PERIOD)
     }
 
+    /**
+     * Sends event to update base currency in the recycler view, when the delay completes
+     */
     private fun updateRecyclerView(): Disposable {
         return Completable.complete()
             .subscribeOn(Schedulers.computation())
@@ -117,10 +141,18 @@ class MainViewModel @Inject constructor(
             .subscribe()
     }
 
+    /**
+     * @param text - string representation of the rate entered by the user
+     */
     fun updateBaseCurrencyValue(text: String) {
         baseCurrencyValue = text.toDoubleOrNull() ?: -1.0
     }
 
+    /**
+     * Updates rate values in currenciesList according to the new value of a base currency
+     * @param conversion - dto which contains latest data from the server
+     * @param baseCurrency - a base currency
+     */
     private fun updateRatesValue(conversion: Conversion, baseCurrency: BaseCurrency) {
         for (currency in currenciesList) {
             when (currency) {

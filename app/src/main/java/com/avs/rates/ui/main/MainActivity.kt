@@ -57,7 +57,7 @@ class MainActivity : BaseActivity(), RatesListener {
 
     override fun onListItemClick(newBaseCurrency: BaseCurrency) {
         binding.recyclerView.itemAnimator = defaultItemAnimator
-        viewModel.updateRates(newBaseCurrency)
+        viewModel.handleUserInteraction(newBaseCurrency)
         binding.recyclerView.layoutManager?.scrollToPosition(0)
     }
 

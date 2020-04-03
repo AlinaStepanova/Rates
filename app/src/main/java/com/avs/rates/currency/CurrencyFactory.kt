@@ -1,5 +1,10 @@
 package com.avs.rates.currency
 
+/**
+ *
+ * @param baseCurrency - string representation of a current base currency
+ * @return a BaseCurrency sub class
+ */
 fun getBaseCurrency(baseCurrency: String): BaseCurrency {
     when (baseCurrency) {
         Currency.AUD.name -> {

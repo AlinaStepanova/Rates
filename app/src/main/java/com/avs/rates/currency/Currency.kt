@@ -1,5 +1,8 @@
 package com.avs.rates.currency
 
+/**
+ * Represents known currencies
+ */
 enum class Currency {
     EUR,
     AUD,

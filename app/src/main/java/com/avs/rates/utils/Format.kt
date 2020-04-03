@@ -2,6 +2,10 @@ package com.avs.rates.utils
 
 import java.math.BigDecimal
 
+/**
+ * @param number - a rate value
+ * @return - formatted rate value to be shown in the recycler view
+ */
 fun doubleToString(number: Double) : String {
     if (number < 0) {
         return ""
@@ -20,6 +24,12 @@ fun doubleToString(number: Double) : String {
     return result
 }
 
+/**
+ *
+ * @param value - a rate value
+ * @param decimalPlace - number of decimal places
+ * @return a rounded rate value
+ */
 fun round(value: Double, decimalPlace: Int): Double {
     var number = BigDecimal(value.toString())
     number = number.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP)

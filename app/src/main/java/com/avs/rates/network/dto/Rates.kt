@@ -2,6 +2,9 @@ package com.avs.rates.network.dto
 
 import java.io.Serializable
 
+/**
+ * Known rates
+ */
 data class Rates(
     val EUR: Double,
     val AUD: Double,

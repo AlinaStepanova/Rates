@@ -19,6 +19,7 @@ class ApplicationModule {
     }
 
     @Provides
+    @Singleton
     fun provideRatesServerApi(ratesApi: RatesApi, rxBus: RxBus): RatesServerApi {
         return RatesServerApi(ratesApi, rxBus)
     }
