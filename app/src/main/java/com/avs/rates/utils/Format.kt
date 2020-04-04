@@ -6,7 +6,7 @@ import java.math.BigDecimal
  * @param number - a rate value
  * @return - formatted rate value to be shown in the recycler view
  */
-fun doubleToString(number: Double) : String {
+fun formatNumber(number: Double) : String {
     if (number < 0) {
         return ""
     }

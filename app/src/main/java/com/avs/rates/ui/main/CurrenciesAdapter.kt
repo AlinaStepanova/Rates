@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.avs.rates.currency.BaseCurrency
 import com.avs.rates.databinding.RateItemListBinding
 import com.avs.rates.utils.CircleTransform
-import com.avs.rates.utils.doubleToString
+import com.avs.rates.utils.formatNumber
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -64,7 +64,7 @@ class CurrenciesAdapter(
         }
 
         fun bind(item: BaseCurrency, context: Context) {
-            bindRate(doubleToString(item.rate))
+            bindRate(formatNumber(item.rate))
             bindCurrencyFullName(item.getFullName().let { context.getString(it) })
             bindCurrencyShortName(item.getShortName())
             bindFlagImage(item.getImagePath())
