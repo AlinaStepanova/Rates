@@ -49,6 +49,6 @@ class BaseCurrencyTest {
 
     @Test
     fun testEquals() {
-        assertFalse(currency == baseCurrency)
+        assertNotSame(currency, baseCurrency)
     }
 }

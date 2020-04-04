@@ -1,5 +1,6 @@
 package com.avs.rates.ui.main
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,7 +37,6 @@ class MainViewModel @Inject constructor(
     private var _networkErrorEvent = MutableLiveData<ErrorType>()
     val networkErrorEvent: LiveData<ErrorType>
         get() = _networkErrorEvent
-    private var isBaseCurrencyChanged = false
     private var apiDisposable: Disposable? = null
     private var rxBusDisposable: Disposable? = null
     private var delayDisposable: Disposable? = null
@@ -66,7 +66,9 @@ class MainViewModel @Inject constructor(
     /**
      * Adds known predefined currencies to the list of currencies
      */
-    private fun addCurrenciesToList() {
+    @VisibleForTesting
+    fun addCurrenciesToList() {
+        currenciesList.clear()
         currenciesList.addAll(
             listOf(
                 AUD(), BGN(), BRL(), CAD(), CHF(), CNY(), CZK(), DKK(), EUR(), GBP(), HKD(), HRK(),
@@ -75,6 +77,15 @@ class MainViewModel @Inject constructor(
             )
         )
     }
+
+    @VisibleForTesting
+    fun getCurrenciesList() = currenciesList
+
+    @VisibleForTesting
+    fun getBaseCurrency() = baseCurrency
+
+    @VisibleForTesting
+    fun getBaseCurrencyValue() = baseCurrencyValue
 
     /**
      * Makes request to the server to update the rates
@@ -93,7 +104,7 @@ class MainViewModel @Inject constructor(
      */
     private fun handleServerResponse(conversion: Conversion) {
         val currency = getBaseCurrency(conversion.baseCurrency)
-        isBaseCurrencyChanged = false
+        var isBaseCurrencyChanged = false
         if (currency != baseCurrency) {
             updateBaseCurrency(currency)
             isBaseCurrencyChanged = true
@@ -109,7 +120,8 @@ class MainViewModel @Inject constructor(
      * MPuts a new base currency to the first position in the currencies list
      * @param newBaseCurrency - a new base currency selected by the user
      */
-    private fun updateBaseCurrency(newBaseCurrency: BaseCurrency) {
+    @VisibleForTesting
+    fun updateBaseCurrency(newBaseCurrency: BaseCurrency) {
         baseCurrency = newBaseCurrency
         currenciesList.remove(newBaseCurrency)
         newBaseCurrency.rate = baseCurrencyValue
