@@ -12,14 +12,14 @@ fun formatNumber(number: Double) : String {
     }
     var result = round(number, 3).toString()
     if (result.contains('.') && result.endsWith('0')) {
-        var i = result.length - 1;
+        var i = result.length - 1
         while (result[i] == '0') {
-            i -= 1;
+            i -= 1
         }
-        result = result.substring(0, i + 1);
+        result = result.substring(0, i + 1)
     }
     if (result.endsWith('.')) {
-        result = result.substring(0, result.length - 1);
+        result = result.substring(0, result.length - 1)
     }
     return result
 }

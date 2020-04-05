@@ -77,7 +77,7 @@ class MainViewModel @Inject constructor(
     fun handleServerResponse(event: Any?) {
         if (event is Conversion) {
             _networkErrorEvent.value = null
-            handleConvertionResponse(event)
+            handleConversionResponse(event)
         } else if (event is ErrorType) {
             if (_conversionList.value == null) {
                 _networkErrorEvent.value = event
@@ -111,7 +111,7 @@ class MainViewModel @Inject constructor(
      * @param conversion - dto which contains latest data from the server
      */
     @VisibleForTesting
-    fun handleConvertionResponse(conversion: Conversion) {
+    fun handleConversionResponse(conversion: Conversion) {
         val currency = getBaseCurrency(conversion.baseCurrency)
         var isBaseCurrencyChanged = false
         if (currency != baseCurrency) {

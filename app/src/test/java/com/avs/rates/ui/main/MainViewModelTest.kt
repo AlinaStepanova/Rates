@@ -40,7 +40,7 @@ class MainViewModelTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    lateinit var conversion: Conversion
+    private lateinit var conversion: Conversion
 
     private val delta = 0.0001
 
@@ -97,7 +97,7 @@ class MainViewModelTest {
     @Test
     fun updateBaseCurrencyTest() {
         viewModel.addCurrenciesToList()
-        viewModel.handleConvertionResponse(conversion)
+        viewModel.handleConversionResponse(conversion)
         val oldBaseCurrency = viewModel.getBaseCurrency()
         val newBaseCurrency = HUF()
         viewModel.updateBaseCurrency(newBaseCurrency)

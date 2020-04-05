@@ -10,7 +10,7 @@ class BaseCurrencyTest {
 
     private lateinit var baseCurrency: BaseCurrency
     private lateinit var currency: BaseCurrency
-    var delta by Delegates.notNull<Double>()
+    private var delta by Delegates.notNull<Double>()
 
     @Before
     fun setUp() {
