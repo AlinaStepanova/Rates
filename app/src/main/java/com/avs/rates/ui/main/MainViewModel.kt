@@ -102,7 +102,8 @@ class MainViewModel @Inject constructor(
      * Performs updates of the base currency and currencies list according to the latest from the server
      * @param conversion - dto which contains latest data from the server
      */
-    private fun handleServerResponse(conversion: Conversion) {
+    @VisibleForTesting
+    fun handleServerResponse(conversion: Conversion) {
         val currency = getBaseCurrency(conversion.baseCurrency)
         var isBaseCurrencyChanged = false
         if (currency != baseCurrency) {
