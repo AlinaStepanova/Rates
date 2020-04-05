@@ -8,6 +8,7 @@ import com.avs.rates.currency.HUF
 import com.avs.rates.currency.JPY
 import com.avs.rates.currency.KRW
 import com.avs.rates.getOrAwaitValue
+import com.avs.rates.network.ErrorType
 import com.avs.rates.network.RatesServerApi
 import com.avs.rates.network.dto.Conversion
 import com.avs.rates.network.dto.Rates
@@ -76,6 +77,16 @@ class MainViewModelTest {
     }
 
     @Test
+    fun handleServerResponseTest() {
+        viewModel.handleServerResponse(ErrorType.SERVER)
+        var serverEvent = viewModel.networkErrorEvent.getOrAwaitValue()
+        assertTrue(serverEvent == ErrorType.SERVER)
+        viewModel.handleServerResponse(conversion)
+        serverEvent = viewModel.networkErrorEvent.getOrAwaitValue()
+        assertTrue(serverEvent == null)
+    }
+
+    @Test
     fun handleUserInteractionTest() {
         val newBaseCurrency = KRW()
         viewModel.handleUserInteraction(newBaseCurrency)
@@ -86,7 +97,7 @@ class MainViewModelTest {
     @Test
     fun updateBaseCurrencyTest() {
         viewModel.addCurrenciesToList()
-        viewModel.handleServerResponse(conversion)
+        viewModel.handleConvertionResponse(conversion)
         val oldBaseCurrency = viewModel.getBaseCurrency()
         val newBaseCurrency = HUF()
         viewModel.updateBaseCurrency(newBaseCurrency)
@@ -95,6 +106,8 @@ class MainViewModelTest {
         assertFalse(viewModel.getCurrenciesList().indexOfLast { it == newBaseCurrency } != 0)
         assertEquals(viewModel.getCurrenciesList()[1], oldBaseCurrency)
         assertEquals(viewModel.getCurrenciesList().size, Currency.values().size)
+        val conversionList = viewModel.conversionList.getOrAwaitValue()
+        assertFalse(conversionList.isNullOrEmpty())
     }
 
     @Test

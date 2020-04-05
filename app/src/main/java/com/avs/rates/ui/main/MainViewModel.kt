@@ -29,7 +29,7 @@ class MainViewModel @Inject constructor(
     private var baseCurrencyValue = DEFAULT_RATE_VALUE
     private var currenciesList = LinkedList<BaseCurrency>()
     private var _conversionList = MutableLiveData<List<BaseCurrency>>()
-    val conversion: LiveData<List<BaseCurrency>>
+    val conversionList: LiveData<List<BaseCurrency>>
         get() = _conversionList
     private var _updateBaseCurrencyEvent = MutableLiveData<Boolean>()
     val updateBaseCurrencyEvent: LiveData<Boolean>
@@ -44,16 +44,7 @@ class MainViewModel @Inject constructor(
     init {
         addCurrenciesToList()
         getRatesPeriodically(0)
-        rxBusDisposable = rxBus.events.subscribe { event ->
-            if (event is Conversion) {
-                _networkErrorEvent.value = null
-                handleServerResponse(event)
-            } else if (event is ErrorType) {
-                if (_conversionList.value == null) {
-                    _networkErrorEvent.value = event
-                }
-            }
-        }
+        rxBusDisposable = rxBus.events.subscribe { event -> handleServerResponse(event) }
     }
 
     override fun onCleared() {
@@ -76,6 +67,22 @@ class MainViewModel @Inject constructor(
                 PLN(), RON(), RUB(), SEK(), SGD(), THB(), USD(), ZAR()
             )
         )
+    }
+
+    /**
+     * Handles server response depending on a event type
+     * @param event - a response from the server or network error
+     */
+    @VisibleForTesting
+    fun handleServerResponse(event: Any?) {
+        if (event is Conversion) {
+            _networkErrorEvent.value = null
+            handleConvertionResponse(event)
+        } else if (event is ErrorType) {
+            if (_conversionList.value == null) {
+                _networkErrorEvent.value = event
+            }
+        }
     }
 
     @VisibleForTesting
@@ -104,7 +111,7 @@ class MainViewModel @Inject constructor(
      * @param conversion - dto which contains latest data from the server
      */
     @VisibleForTesting
-    fun handleServerResponse(conversion: Conversion) {
+    fun handleConvertionResponse(conversion: Conversion) {
         val currency = getBaseCurrency(conversion.baseCurrency)
         var isBaseCurrencyChanged = false
         if (currency != baseCurrency) {

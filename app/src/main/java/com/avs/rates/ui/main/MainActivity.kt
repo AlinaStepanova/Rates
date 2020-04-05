@@ -36,7 +36,7 @@ class MainActivity : BaseActivity(), RatesListener {
         binding.recyclerView.adapter = adapter
         binding.recyclerView.itemAnimator = null
 
-        viewModel.conversion.observe(this, Observer {
+        viewModel.conversionList.observe(this, Observer {
             it?.let {
                 binding.recyclerView.itemAnimator = null
                 adapter.setCurrencies(LinkedList(it))
