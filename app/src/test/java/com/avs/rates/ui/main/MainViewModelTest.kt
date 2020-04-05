@@ -5,6 +5,7 @@ import com.avs.rates.EMISSION_PERIOD
 import com.avs.rates.RxSchedulerRule
 import com.avs.rates.currency.Currency
 import com.avs.rates.currency.HUF
+import com.avs.rates.currency.JPY
 import com.avs.rates.currency.KRW
 import com.avs.rates.getOrAwaitValue
 import com.avs.rates.network.RatesServerApi
@@ -91,6 +92,7 @@ class MainViewModelTest {
         viewModel.updateBaseCurrency(newBaseCurrency)
         assertEquals(viewModel.getBaseCurrency(), newBaseCurrency)
         assertEquals(viewModel.getCurrenciesList().first, newBaseCurrency)
+        assertFalse(viewModel.getCurrenciesList().indexOfLast { it == newBaseCurrency } != 0)
         assertEquals(viewModel.getCurrenciesList()[1], oldBaseCurrency)
         assertEquals(viewModel.getCurrenciesList().size, Currency.values().size)
     }
@@ -100,5 +102,28 @@ class MainViewModelTest {
         viewModel.updateRecyclerView()
         val updateEvent = viewModel.updateBaseCurrencyEvent.getOrAwaitValue()
         assertTrue(updateEvent)
+    }
+
+    @Test
+    fun updateRatesValueTest() {
+        val newValue = 500.0
+        val oldAUDValue = 1.5
+        val oldZARValue = 13.25
+        val newBaseCurrency = JPY()
+        conversion = Conversion(
+            newBaseCurrency.getShortName(), Rates(
+                oldAUDValue, 2.06, 23.0, 0.1, 12.3, 24.02, 23.04,
+                0.99, 3.23, 32.2, 12.234, 23.09, 12.34, 9.32,
+                8.0988, 19.0, 33.8, newValue, 1.99, 12.9, 9.09,
+                8.009, 100.4, 1.1, 2.2, 333.9, 60.0, 0.999,
+                5.21, 1.1, 12.2, oldZARValue
+            )
+        )
+        newBaseCurrency.rate = newValue
+        viewModel.handleUserInteraction(newBaseCurrency)
+        viewModel.updateRatesValue(conversion, newBaseCurrency)
+        assertEquals(viewModel.getCurrenciesList().first.rate, newValue, delta)
+        assertEquals(viewModel.getCurrenciesList()[1].rate, newValue * oldAUDValue, delta)
+        assertEquals(viewModel.getCurrenciesList().last.rate, newValue * oldZARValue, delta)
     }
 }

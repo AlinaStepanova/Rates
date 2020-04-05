@@ -6,7 +6,6 @@ import java.io.Serializable
  * Known rates
  */
 data class Rates(
-    val EUR: Double,
     val AUD: Double,
     val BGN: Double,
     val BRL: Double,
@@ -15,6 +14,7 @@ data class Rates(
     val CNY: Double,
     val CZK: Double,
     val DKK: Double,
+    val EUR: Double,
     val GBP: Double,
     val HKD: Double,
     val HRK: Double,

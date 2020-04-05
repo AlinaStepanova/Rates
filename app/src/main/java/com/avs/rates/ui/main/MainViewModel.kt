@@ -168,7 +168,8 @@ class MainViewModel @Inject constructor(
      * @param conversion - dto which contains latest data from the server
      * @param baseCurrency - a base currency
      */
-    private fun updateRatesValue(conversion: Conversion, baseCurrency: BaseCurrency) {
+    @VisibleForTesting
+    fun updateRatesValue(conversion: Conversion, baseCurrency: BaseCurrency) {
         for (currency in currenciesList) {
             when (currency) {
                 is EUR -> {

@@ -20,13 +20,13 @@ class BaseCurrencyTest {
     }
 
     @Test
-    fun getRate() {
+    fun getRateTest() {
         assertEquals(baseCurrency.rate, DEFAULT_RATE_VALUE, delta)
         assertEquals(currency.rate, DEFAULT_RATE_VALUE, delta)
     }
 
     @Test
-    fun setRate() {
+    fun setRateTest() {
         baseCurrency.rate = 5.098
         assertEquals(baseCurrency.rate, 5.098, delta)
         currency.rate = 12.0
@@ -35,20 +35,20 @@ class BaseCurrencyTest {
     }
 
     @Test
-    fun getShortName() {
+    fun getShortNameTest() {
         assertTrue(baseCurrency.getShortName().isNotEmpty())
         assertEquals(baseCurrency.getShortName(), Currency.AUD.name)
         assertNotEquals(baseCurrency.getShortName(), currency.getShortName())
     }
 
     @Test
-    fun getImagePath() {
+    fun getImagePathTest() {
         assertTrue(baseCurrency.getImagePath().isNotEmpty())
         assertTrue(currency.getImagePath().isNotEmpty())
     }
 
     @Test
-    fun testEquals() {
+    fun equalsTest() {
         assertNotSame(currency, baseCurrency)
     }
 }
