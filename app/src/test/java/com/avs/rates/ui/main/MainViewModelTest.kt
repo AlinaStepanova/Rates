@@ -44,11 +44,15 @@ class MainViewModelTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         viewModel = MainViewModel(ratesServerApi, rxBus)
-        conversion = Conversion(Currency.EUR.name, Rates(1.0, 12.0, 23.0, 0.1,
-        12.3, 24.02, 23.04, 0.99, 3.23, 32.2, 12.234, 23.09,
-        12.34, 9.32, 8.0988, 19.0, 33.8, 0.99, 1.99, 12.9, 9.09,
-        8.009, 100.4, 1.1, 2.2, 333.9, 60.0, 0.999, 5.21, 1.1,
-        12.2, 1.5))
+        conversion = Conversion(
+            Currency.EUR.name, Rates(
+                1.0, 12.0, 23.0, 0.1, 12.3, 24.02, 23.04,
+                0.99, 3.23, 32.2, 12.234, 23.09, 12.34, 9.32,
+                8.0988, 19.0, 33.8, 0.99, 1.99, 12.9, 9.09,
+                8.009, 100.4, 1.1, 2.2, 333.9, 60.0, 0.999,
+                5.21, 1.1, 12.2, 1.5
+            )
+        )
     }
 
     @Test
@@ -60,7 +64,7 @@ class MainViewModelTest {
 
     @Test
     fun updateBaseCurrencyValueTest() {
-        viewModel.updateBaseCurrencyValue("AUD")
+        viewModel.updateBaseCurrencyValue(Currency.EUR.name)
         assertEquals(viewModel.getBaseCurrencyValue(), -1.0, delta)
         viewModel.updateBaseCurrencyValue("")
         assertEquals(viewModel.getBaseCurrencyValue(), -1.0, delta)
@@ -78,5 +82,6 @@ class MainViewModelTest {
         assertEquals(viewModel.getBaseCurrency(), newBaseCurrency)
         assertEquals(viewModel.getCurrenciesList().first, newBaseCurrency)
         assertEquals(viewModel.getCurrenciesList()[1], oldBaseCurrency)
+        assertEquals(viewModel.getCurrenciesList().size, Currency.values().size)
     }
 }
