@@ -18,7 +18,7 @@
         tools:context=".ui.main.MainActivity">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView"
+            android:id="@+id/tvRatesTitle"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
             android:gravity="center_vertical"
@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView"
+            app:layout_constraintTop_toBottomOf="@+id/tvRatesTitle"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
         <ImageView
@@ -51,7 +51,7 @@
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@+id/recyclerView"
             app:layout_constraintStart_toStartOf="@+id/recyclerView"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView"
+            app:layout_constraintTop_toBottomOf="@+id/tvRatesTitle"
             android:contentDescription="@string/network_error_image_content_description" />
 
         <TextView
