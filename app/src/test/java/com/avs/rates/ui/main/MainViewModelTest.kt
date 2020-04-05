@@ -1,9 +1,12 @@
 package com.avs.rates.ui.main
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.avs.rates.EMISSION_PERIOD
 import com.avs.rates.RxSchedulerRule
 import com.avs.rates.currency.Currency
 import com.avs.rates.currency.HUF
+import com.avs.rates.currency.KRW
+import com.avs.rates.getOrAwaitValue
 import com.avs.rates.network.RatesServerApi
 import com.avs.rates.network.dto.Conversion
 import com.avs.rates.network.dto.Rates
@@ -13,10 +16,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.InjectMocks
+import org.mockito.*
+import org.mockito.Mockito.*
 
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -73,6 +75,14 @@ class MainViewModelTest {
     }
 
     @Test
+    fun handleUserInteractionTest() {
+        val newBaseCurrency = KRW()
+        viewModel.handleUserInteraction(newBaseCurrency)
+        verify(ratesServerApi, times(1))
+            .getRatesPeriodically(EMISSION_PERIOD, newBaseCurrency.getShortName())
+    }
+
+    @Test
     fun updateBaseCurrencyTest() {
         viewModel.addCurrenciesToList()
         viewModel.handleServerResponse(conversion)
@@ -83,5 +93,12 @@ class MainViewModelTest {
         assertEquals(viewModel.getCurrenciesList().first, newBaseCurrency)
         assertEquals(viewModel.getCurrenciesList()[1], oldBaseCurrency)
         assertEquals(viewModel.getCurrenciesList().size, Currency.values().size)
+    }
+
+    @Test
+    fun updateRecyclerViewTest() {
+        viewModel.updateRecyclerView()
+        val updateEvent = viewModel.updateBaseCurrencyEvent.getOrAwaitValue()
+        assertTrue(updateEvent)
     }
 }

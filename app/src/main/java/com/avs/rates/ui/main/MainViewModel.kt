@@ -91,7 +91,8 @@ class MainViewModel @Inject constructor(
      * Makes request to the server to update the rates
      * @param initialDelay - the initial delay time to wait before emitting the first value
      */
-    private fun getRatesPeriodically(initialDelay: Long) {
+    @VisibleForTesting
+    fun getRatesPeriodically(initialDelay: Long) {
         apiDisposable =
             ratesServerApi.getRatesPeriodically(
                 initialDelay, baseCurrency?.getShortName() ?: DEFAULT_CURRENCY
@@ -145,7 +146,8 @@ class MainViewModel @Inject constructor(
     /**
      * Sends event to update base currency in the recycler view, when the delay completes
      */
-    private fun updateRecyclerView(): Disposable {
+    @VisibleForTesting
+    fun updateRecyclerView(): Disposable {
         return Completable.complete()
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
