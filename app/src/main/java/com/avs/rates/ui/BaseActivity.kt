@@ -7,7 +7,7 @@ import com.avs.rates.di.ViewModelFactory
 
 /**
  * A class which serve as a parent to all activities classes in the app.
- * Contains common data and methods
+ * Contains common data and methods.
  */
 abstract class BaseActivity : AppCompatActivity() {
 

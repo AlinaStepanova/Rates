@@ -168,6 +168,7 @@ class MainViewModel @Inject constructor(
      */
     fun updateBaseCurrencyValue(text: String) {
         baseCurrencyValue = text.toDoubleOrNull() ?: -1.0
+        currenciesList.first.rate = baseCurrencyValue
     }
 
     /**

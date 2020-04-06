@@ -7,16 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.avs.rates.R
 import com.avs.rates.currency.BaseCurrency
 import com.avs.rates.databinding.RateItemListBinding
 import com.avs.rates.utils.CircleTransform
 import com.avs.rates.utils.formatNumber
+import com.avs.rates.utils.getSelectionIndex
 import com.squareup.picasso.Picasso
 import java.util.*
 
 interface RatesListener {
     fun onListItemClick(newBaseCurrency: BaseCurrency)
-    fun onEditTextChanged(text: String)
+    fun onEditTextChanged(stringValue: String)
 }
 
 class CurrenciesAdapter(
@@ -29,6 +31,10 @@ class CurrenciesAdapter(
     private var textWatcher = getTextWatcher()
     private var currencies: LinkedList<BaseCurrency>? = currencyList
 
+    /**
+     * Updates currencies list
+     * @param currencies - updated list of currencies
+     */
     fun setCurrencies(currencies: LinkedList<BaseCurrency>?) {
         this.currencies = currencies
         notifyItemRangeChanged(1, (this.currencies?.size?.minus(1) ?: 0))
@@ -50,6 +56,9 @@ class CurrenciesAdapter(
         }
     }
 
+    /**
+     * Update first two top items after base currency has changed
+     */
     fun updateTopItems() {
         if (itemCount != 0) notifyItemChanged(0)
         if (itemCount > 0) notifyItemChanged(1)
@@ -58,9 +67,12 @@ class CurrenciesAdapter(
     inner class RatesViewHolder(private val binding: RateItemListBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
+        private val editTextMaxLength : Int
+
         init {
             binding.root.setOnClickListener(this)
             binding.editText.setOnClickListener(this)
+            editTextMaxLength = context.resources.getInteger(R.integer.edit_text_max_length)
         }
 
         fun bind(item: BaseCurrency, context: Context) {
@@ -70,14 +82,27 @@ class CurrenciesAdapter(
             bindFlagImage(item.getImagePath())
         }
 
+        /**
+         * Sets short currency name to a corresponding text view
+         * @param name - short name of currency
+         */
         private fun bindCurrencyShortName(name: String?) {
             if (name != null) binding.tvCurrencyShortName.text = name
         }
 
+        /**
+         * Sets full currency name to a corresponding text view
+         * @param name - full name of currency
+         */
         private fun bindCurrencyFullName(name: String?) {
             if (name != null) binding.tvCurrencyFullName.text = name
         }
 
+        /**
+         * Disables all the edit texts in the recycler view except for the top one.
+         * Sets rate value.
+         * @param value - a rate value
+         */
         private fun bindRate(value: String) {
             binding.editText.removeTextChangedListener(textWatcher)
             binding.editText.isEnabled = adapterPosition == 0
@@ -86,9 +111,14 @@ class CurrenciesAdapter(
                 binding.editText.addTextChangedListener(textWatcher)
                 itemClickListener.onEditTextChanged(binding.editText.text.toString())
                 binding.editText.requestFocus()
+                binding.editText.setSelection(getSelectionIndex(value.length, editTextMaxLength))
             }
         }
 
+        /**
+         * Loads image url into a image view using custom circle transformation
+         * @param imageUrl - country flag url
+         */
         private fun bindFlagImage(imageUrl: String?) {
             Picasso.get()
                 .load(imageUrl)
@@ -97,6 +127,10 @@ class CurrenciesAdapter(
                 .into(binding.ivFlagImage)
         }
 
+        /**
+         * Changes base currency to appear on the top, if not a first item was clicked
+         * @param view - recycler view item
+         */
         override fun onClick(view: View?) {
             val clickedPosition = adapterPosition
             if (clickedPosition != 0 && !currencies.isNullOrEmpty()) {
@@ -112,6 +146,10 @@ class CurrenciesAdapter(
         }
     }
 
+    /**
+     * Listens to a rate changing of a base currency
+     * @return
+     */
     private fun getTextWatcher(): TextWatcher {
         return object : TextWatcher {
 

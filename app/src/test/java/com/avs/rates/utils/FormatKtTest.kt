@@ -36,4 +36,15 @@ class FormatKtTest {
         assertEquals(round(value, 2), 1234.01, delta)
         assertEquals(round(value, 3), 1234.01, delta)
     }
+
+    @Test
+    fun getSelectionIndexTest() {
+        var valueLength = 10
+        val maxLength = 18
+        assertEquals(getSelectionIndex(valueLength, maxLength), valueLength)
+        valueLength = 22
+        assertEquals(getSelectionIndex(valueLength, maxLength), maxLength)
+        valueLength = 18
+        assertEquals(getSelectionIndex(valueLength, maxLength), valueLength)
+    }
 }

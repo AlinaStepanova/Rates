@@ -35,3 +35,13 @@ fun round(value: Double, decimalPlace: Int): Double {
     number = number.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP)
     return number.toDouble()
 }
+
+/**
+ *
+ * @param rateValueLength - rate value length
+ * @param maxLength - max allowed length of tne elements to be inserted in an edit text
+ * @return cursor position
+ */
+fun getSelectionIndex(rateValueLength: Int, maxLength: Int) : Int {
+    return if (rateValueLength > maxLength) maxLength else rateValueLength
+}

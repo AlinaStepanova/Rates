@@ -3,6 +3,9 @@ package com.avs.rates.currency
 import com.avs.rates.DEFAULT_RATE_VALUE
 import com.avs.rates.R
 
+/**
+ * Base class for every currency. Holds common data and methods.
+ */
 abstract class BaseCurrency {
 
     var rate: Double = DEFAULT_RATE_VALUE

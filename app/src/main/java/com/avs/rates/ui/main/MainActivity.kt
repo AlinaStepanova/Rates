@@ -15,7 +15,6 @@ import com.avs.rates.ui.BaseActivity
 import java.util.*
 import javax.inject.Inject
 
-
 class MainActivity : BaseActivity(), RatesListener {
 
     @Inject
@@ -55,18 +54,30 @@ class MainActivity : BaseActivity(), RatesListener {
         })
     }
 
+    /**
+     * Triggered when used has selected new base currency
+     * @param newBaseCurrency - new base currency
+     */
     override fun onListItemClick(newBaseCurrency: BaseCurrency) {
         binding.recyclerView.itemAnimator = defaultItemAnimator
         viewModel.handleUserInteraction(newBaseCurrency)
         binding.recyclerView.layoutManager?.scrollToPosition(0)
     }
 
-    override fun onEditTextChanged(text: String) {
-        viewModel.updateBaseCurrencyValue(text)
+    /**
+     * Triggered when used has changed a rate of a base currency
+     * @param stringValue - updated rate value of a base currency
+     */
+    override fun onEditTextChanged(stringValue: String) {
+        viewModel.updateBaseCurrencyValue(stringValue)
     }
 
-    private fun handleErrorItemsAppearance(it: ErrorType?) {
-        when (it) {
+    /**
+     * Manages UI items visibility in a case when network error has occurred before recycler view was shown
+     * @param errorType - network related type of error
+     */
+    private fun handleErrorItemsAppearance(errorType: ErrorType?) {
+        when (errorType) {
             null -> {
                 binding.ivCloud.visibility = View.INVISIBLE
                 binding.ivMessage.visibility = View.INVISIBLE

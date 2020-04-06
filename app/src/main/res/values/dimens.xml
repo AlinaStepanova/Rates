@@ -8,4 +8,5 @@
     <dimen name="dimen_16dp">16dp</dimen>
     <dimen name="dimen_32dp">32dp</dimen>
     <dimen name="dimen_56dp">56dp</dimen>
+    <integer name="edit_text_max_length">18</integer>
 </resources>
